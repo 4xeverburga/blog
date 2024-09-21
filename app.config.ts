@@ -19,7 +19,7 @@ export default defineAppConfig({
     },
     footer: {
       credits: {
-        enabled: true, // possible value are : true | false
+        enabled: false, // possible value are : true | false
         repository: 'https://github.com/4xeverburga' // our github repository
       },
       navigation: true, // possible value are : true | false
