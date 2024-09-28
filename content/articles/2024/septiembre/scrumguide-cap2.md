@@ -1,6 +1,6 @@
 ---
 layout: article
-cover: /articles/2024/septiembre/scrum-principles.jpg
+cover: /articles/software-dlc.jpg
 author:
   name: Ever Burga
 description: Capítulo 2 de la guía de Scrum
@@ -11,6 +11,10 @@ date: 2024-09-28T14:00:00.000Z
 
 # Principios de Scrum
 
+<p align="center">
+  <img src="/articles/2024/septiembre/scrum-principles.jpg" alt="Componentes del control empírico en Scrum">
+</p>
+
 ## 1. Introducción
 
 Los principios de Scrum son fundamentales para la correcta aplicación de este marco de trabajo. Aunque los procesos y aspectos de Scrum pueden adaptarse a las necesidades de cada proyecto u organización, los principios no pueden modificarse. Estos principios garantizan la confianza en el uso de Scrum y se aplican a proyectos de cualquier tamaño, industria o complejidad.
@@ -20,6 +24,11 @@ Los principios de Scrum son fundamentales para la correcta aplicación de este m
 Es esencial que todos los roles de Scrum, incluyendo Product Owner, Scrum Master y el Equipo Scrum, comprendan a fondo los principios. Todos los interesados en el proyecto deben entender los fundamentos para que Scrum funcione correctamente.
 
 ## 3. Control de proceso empírico
+
+
+<p align="center">
+  <img src="/articles/2024/septiembre/scrum-empirical-control-components.png" alt="Componentes del control empírico en Scrum">
+</p>
 
 Scrum se basa en la toma de decisiones mediante la observación, experimentación y aprendizaje. Este principio se sustenta en tres pilares: **transparencia**, **inspección** y **adaptación**.
 
