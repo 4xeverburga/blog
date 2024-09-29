@@ -1,57 +1,9 @@
-# Alpine Starter
+# Mi Blog
 
-Starter template for [Alpine](https://alpine.nuxt.space).
+Mi fork de ```@nuxt-themes/alpine``` utilizado aquí es ```https://github.com/4xeverburga/nuxt-alpine-spanishplus```, pero  funciona solo con pnpm, asi que tienes 
+que usar ```pnpm install``` y la suit de comandos de pnpm para generar el proyecto.
 
-## Clone
+Si necesitas usar npm (como para cloudfare pages) el roundabout que uso es tomar el archivo generado por ```pnpm pack``` directamente: ```./nuxt-themes-alpine-1.6.6.tgz```.
 
-Clone the repository (using `nuxi`):
-
-```bash
-npx nuxi init -t themes/alpine
-```
-
-## Setup
-
-Install dependencies:
-
-```bash
-pnpm install
-```
-
-## Development
-
-```bash
-pnpm dev
-```
-
-## Edge Side Rendering
-
-Can be deployed to Vercel Functions, Netlify Functions, AWS, and most Node-compatible environments.
-
-Look at all the available presets [here](https://v3.nuxtjs.org/g/deploy/presets).
-
-```bash
-pnpm build
-```
-
-## Static Generation
-
-Use the `generate` command to build your application.
-
-The HTML files will be generated in the .output/public directory and ready to be deployed to any static compatible hosting.
-
-```bash
-pnpm generate
-```
-
-## Preview build
-
-You might want to preview the result of your build locally, to do so, run the following command:
-
-```bash
-pnpm preview
-```
-
----
-
-For a detailed explanation of how things work, check out [Alpine](https://alpine.nuxt.space).
+El work TODO es encontrar la manera de configurar ```https://github.com/4xeverburga/nuxt-alpine-spanishplus``` para que funcione con npm.
+Una alternativa es crear una rama /release en la que descomprimir el resultado de ```pnpm pack```, pero no es la solucion al problema raíz.
