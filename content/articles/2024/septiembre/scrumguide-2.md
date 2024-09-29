@@ -1,6 +1,6 @@
 ---
 layout: article
-cover: /articles/software-dlc.jpg
+cover: /articles/2024/septiembre/software-dlc.jpg
 author:
   name: Ever Burga
 description: Capítulo 2 de la guía de Scrum

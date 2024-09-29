@@ -1,5 +1,5 @@
 ---
-cover: /articles/devsecops.webp
+cover: /articles/2024/agosto/devsecops.webp
 author:
   name: Ever Burga
   avatarUrl: https://pbs.twimg.com/profile_images/1370286658432724996/ZMSDzzIi_400x400.jpg
