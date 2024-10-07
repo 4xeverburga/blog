@@ -28,7 +28,7 @@ están prohibidas
 
 ```
 Son los molinos
-como un ángel corriendo
+como un ángel caminando
 a ningún lado
 ```
 
