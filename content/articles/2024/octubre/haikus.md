@@ -11,6 +11,9 @@ date: 2024-10-7T02:00:00.000Z
 
 # Viaje de regreso
 
+<p align="center">
+  <img src="/articles/2024/octubre/colegio.jpeg" alt="Molinos en Cajamarca">
+</p>
 
 ```
 Aquellas aulas
@@ -20,7 +23,7 @@ están prohibidas
 
 
 <p align="center">
-  <img src="/articles/2024/septiembre/scrum-principles.jpg" alt="Componentes del control empírico en Scrum">
+  <img src="/articles/2024/octubre/central-eolica.jpeg" alt="Molinos en Cajamarca">
 </p>
 
 ```
