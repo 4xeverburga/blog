@@ -73,8 +73,11 @@ El valor del proyecto debe revisarse de manera constante para garantizar su viab
 El EVA compara el rendimiento real del proyecto con el plan previsto, ayudando a identificar si el proyecto está cumpliendo con los objetivos de tiempo y costo.
 
 ### Diagrama de flujo acumulado (CFD)
-El CFD proporciona una representación visual del progreso del proyecto, identificando cuellos de botella y áreas donde se puede mejorar la eficiencia.
+<p align="center">
+  <img src="/articles/2024/octubre/scrum-diagrama-valor-ganado.png" alt="Scrum">
+</p>
 
+El CFD pro porciona una representación visual del progreso del proyecto, identificando cuellos de botella y áreas donde se puede mejorar la eficiencia.
 ## Confirmar la realización de beneficios
 Durante todo el proyecto, se deben confirmar los beneficios obtenidos para asegurar que se cumplan las expectativas de los interesados.
 
