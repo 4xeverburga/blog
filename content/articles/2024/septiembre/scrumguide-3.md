@@ -6,13 +6,13 @@ author:
 description: Capítulo 3 de la guía de Scrum
 
 
-date: 2024-09-28T14:00:00.000Z
+date: 2024-10-12T13:00:00.000Z
 ---
 
 # Organización 
 
 <p align="center">
-  <img src="/articles/2024/septiembre/scrum-principles.jpg" alt="Componentes del control empírico en Scrum">
+  <img src="/articles/2024/octubre/scrum-roles.png" alt="Roles en Scrum">
 </p>
 
 A diferencia de la gestión tradicional de proyectos, que se enfoca en una planificación detallada desde el inicio, Scrum permite la adaptación continua mediante el desarrollo iterativo y la priorización basada en valor. Esto reduce los riesgos de entregar productos que no cumplan con las expectativas del cliente.

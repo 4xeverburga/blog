@@ -25,7 +25,7 @@ Cada rol tiene responsabilidades específicas respecto a la justificación del n
 Scrum se centra en la entrega basada en valor desde las primeras fases del proyecto, permitiendo a los interesados recibir valor de manera continua. Es crucial priorizar los requerimientos de alto valor y mitigar los riesgos que pueden afectar esa entrega.
 
 <p align="center">
-  <img src="/articles/2024/octubre/scrum-diferencias.png" alt="Componentes del control empírico en Scrum">
+  <img src="/articles/2024/octubre/scrum-diferencias.png" alt="Scrum">
 </p>
 
 ## Responsabilidades del Product Owner en la justificación del negocio
