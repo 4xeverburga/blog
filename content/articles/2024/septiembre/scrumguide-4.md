@@ -44,6 +44,7 @@ Estos incluyen: razonamiento del proyecto, necesidades del negocio, beneficios, 
 <p align="center">
   <img src="/articles/2024/octubre/scrum-justificacion-negocio.png" alt="Scrum">
 </p>
+
 La justificación se evalúa continuamente durante el proyecto, ajustándose según sea necesario. El Product Owner debe mantener la justificación actualizada para la toma de decisiones informadas.
 
 ## Técnicas de justificación del negocio
