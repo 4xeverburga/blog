@@ -41,8 +41,10 @@ La justificación del negocio responde a la pregunta de por qué es necesario un
 Estos incluyen: razonamiento del proyecto, necesidades del negocio, beneficios, costo de oportunidad, riesgos, plazos y costos.
 
 ## La justificación del negocio y el ciclo de vida del proyecto
-<p align="center">
+<p style="font-size:11px;font-weight: bold" align="center">
   <img src="/articles/2024/octubre/scrum-justificacion-negocio.png" alt="Scrum">
+  Justificación del negocio
+  <!-- add image name -->
 </p>
 
 La justificación se evalúa continuamente durante el proyecto, ajustándose según sea necesario. El Product Owner debe mantener la justificación actualizada para la toma de decisiones informadas.
