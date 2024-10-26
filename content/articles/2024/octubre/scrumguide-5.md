@@ -6,7 +6,7 @@ author:
 description: Capítulo 5 de la guía de Scrum
 
 
-date: 2024-26-12T14:00:00.000Z
+date: 2024-10-26T14:00:00.000Z
 ---
 
 # Calidad
