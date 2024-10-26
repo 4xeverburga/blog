@@ -53,7 +53,7 @@ Se muestra cómo el ciclo PDCA se aplica en Scrum para la mejora continua de los
 Se presenta una tabla resumida que muestra las responsabilidades de cada rol en relación a la calidad, facilitando la comprensión de las tareas de cada uno.
 <p style="font-size:11px;font-weight: bold" align="center">
   <img src="/articles/2024/octubre/tabla-responsabilidades.png" alt="Scrum">
-  Figura 1. Tabla de Responsabilidades
+  Tabla 1. Tabla de Responsabilidades
   <!-- add image name -->
 </p>
 
