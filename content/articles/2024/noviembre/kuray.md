@@ -13,8 +13,11 @@ date: 2024-11-25T02:00:00.000Z
 <p align="center">
   <img src="/articles/2024/octubre/nueva-cajamarca.jpg" alt="Kuray">
 </p>
+<p align="center">
+  <a href="https://www.canva.com/design/DAGWzA9MmuM/GThmrxiz-iPu-Wb5z8ZnYQ/view?utm_content=DAGWzA9MmuM&utm_campaign=designshare&utm_medium=link&utm_source=editor#12" target="_blank" style="text-decoration:none; font-size:2.2em; font-weight:bold;">Conócenos</a>
+</p>
 
-## Enlaces
+## App
 
 <a href="https://474f-2800-200-ef20-5b4-ebac-ef8-a9a4-48ae.ngrok-free.app/" target="_blank">Cultiva Basándote en Datos!</a>
 
