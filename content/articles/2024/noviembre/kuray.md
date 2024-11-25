@@ -1,6 +1,6 @@
 ---
 layout: article
-cover: /articles/2024/octubre/nueva-cajamarca.jpg
+cover: /articles/2024/noviembre/kuray.png
 author:
   name: Ever Burga
 description: Kuray - Enlaces
@@ -11,7 +11,7 @@ date: 2024-11-25T02:00:00.000Z
 
 # Kuray
 <p align="center">
-  <img src="/articles/2024/noviembre/kuray.png" alt="Kuray">
+  <img src="/articles/2024/octubre/nueva-cajamarca.jpg" alt="Kuray">
 </p>
 
 ## Enlaces
