@@ -31,7 +31,7 @@ export default defineAppConfig({
       linkedin: {
         icon: 'uil:linkedin',
         label: 'LinkedIn',
-        href: 'https://www.linkedin.com/in/ever-alexis-burga-peralta-87ba5b160/'
+        href: 'https://www.linkedin.com/in/everburga'
       }
     },
     form: {

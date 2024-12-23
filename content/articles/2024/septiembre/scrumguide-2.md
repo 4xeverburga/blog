@@ -26,10 +26,6 @@ Es esencial que todos los roles de Scrum, incluyendo Product Owner, Scrum Master
 ## 3. Control de proceso empírico
 
 
-<p align="center">
-  <img src="/articles/2024/octubre/central-eolica.jpeg" alt="Molinos en Cajamarca">
-</p>
-
 Scrum se basa en la toma de decisiones mediante la observación, experimentación y aprendizaje. Este principio se sustenta en tres pilares: **transparencia**, **inspección** y **adaptación**.
 
 ### 3.1 Transparencia

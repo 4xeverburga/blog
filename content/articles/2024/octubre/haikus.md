@@ -6,7 +6,7 @@ author:
 description: Haikus de Octubre
 
 
-date: 2024-10-7T02:00:00.000Z
+date: 2024-10-07T02:00:00.000Z
 ---
 
 # Viaje de regreso
