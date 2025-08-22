@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   // https://github.com/nuxt-themes/alpine
-  extends: '@nuxt-themes/alpine',
+  extends: '@4verburga/alpine-spanishplus',
 
   modules: [
     // https://github.com/nuxt-modules/plausible
