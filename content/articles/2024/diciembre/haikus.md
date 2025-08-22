@@ -9,7 +9,7 @@ description: Haikus de Diciembre
 date: 2024-12-27T02:00:00.000Z
 ---
 
-# Diciembre es un mes solitario
+# Diciembre es un mes más
 
 <p align="center">
   <img src="/articles/2024/diciembre/birds.avif" alt="Pájaros frente a un rascacielos">
