@@ -10,7 +10,7 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@4verburga/alpine-spanishplus": "^3.0.1",
+    "@4xeverburga/alpine-spanishplus": "3.1.1",
     "@nuxt/devtools": "^1.0.8",
     "@nuxt/eslint-config": "^0.2.0",
     "@nuxtjs/plausible": "^0.2.4",
