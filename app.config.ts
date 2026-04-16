@@ -24,7 +24,10 @@ export default defineAppConfig({
       },
       navigation: true, // possible value are : true | false
       alignment: 'center', // possible value are : 'none' | 'left' | 'center' | 'right'
-      message: 'Sígueme en' // string that will be displayed in the footer (leave empty or delete to disable)
+      message: {
+        es: 'Encuentrame en',
+        en: 'Find me here'
+      } // string that will be displayed in the footer (leave empty or delete to disable)
     },
     socials: {
       github: '4xeverburga',
