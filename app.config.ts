@@ -38,7 +38,10 @@ export default defineAppConfig({
       }
     },
     form: {
-      successMessage: 'Mensaje Enviado. Gracias'
+      successMessage: {
+        es: 'Mensaje Enviado. Gracias',
+        en: 'Message sent. Thank you!'
+      }
     }
   }
 })

@@ -4,7 +4,7 @@ cover: /articles/2026/april/fork-multilenguaje-cover.avif
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
-description: Desplegando las updates de mi blog a npmjs con github actions
+description: From github to node 
 date: 2026-04-13T10:00:00.000Z
 head:
   meta:
@@ -12,7 +12,7 @@ head:
       content: nuxt theme, bilingual blog, npm publish, github actions, github workflows, npmjs, github, i18n, OIDC, trusted publishing, ci-cd, open source
 ---
 
-# Un Pequeño Fork
+# Desplegando las updates de mi blog a npmjs con github actions
 
 Quise expandir mi proyecto para soporte multilenguaje. Y en el camino terminé los cambios necesarios para que tú también disfrutes del proyecto por completo.
 
