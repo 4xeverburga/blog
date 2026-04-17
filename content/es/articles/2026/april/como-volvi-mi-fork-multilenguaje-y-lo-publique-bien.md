@@ -3,45 +3,19 @@ layout: article
 cover: /articles/2026/april/fork-multilenguaje-cover.avif
 author:
   name: Ever Burga
-description: Lo que empezó como un fork para ajustar un tema terminó obligándome a ordenar contenido, publicar en dos registries y tratar el repositorio como producto.
+  url: https://www.linkedin.com/in/everburga/
+description: Desplegando las updates de mi blog a npmjs con github actions
 date: 2026-04-13T10:00:00.000Z
+head:
+  meta:
+    - name: keywords
+      content: nuxt theme, bilingual blog, npm publish, github actions, github workflows, npmjs, github, i18n, OIDC, trusted publishing, ci-cd, open source
 ---
 
-# Cómo Volví Mi Fork Multilenguaje y Lo Publiqué Bien
+# Un Pequeño Fork
 
-Durante bastante tiempo traté este fork como se suelen tratar los forks: una copia útil, un poco de maquillaje, un par de cambios que “ya luego ordeno” y a seguir con otra cosa.
+Quise expandir mi proyecto para soporte multilenguaje. Y en el camino terminé los cambios necesarios para que tú también disfrutes del proyecto por completo.
 
-El problema es que esa mentira funciona mientras el proyecto vive encerrado en tu máquina. En el momento en que quise usarlo como una capa reusable para mi blog, darle soporte multilenguaje y además publicarlo de forma limpia en npmjs y GitHub Packages, el fork dejó de ser un experimento. Ahí ya no bastaba con que funcionara. Tenía que tener estructura, rutas predecibles y un pipeline que no dependiera de mi paciencia ni de copiar comandos a mano.
-
-Y honestamente, ahí fue donde se puso interesante.
-
-## El momento en que el fork dejó de ser “solo un fork”
-
-La base era `Alpine`, el tema de Nuxt. Mi objetivo inicial era simple: castellanizarlo y adaptarlo a mi blog. Pero apenas apareció la necesidad de contenido bilingüe, la cosa cambió de escala.
-
-Ya no era solamente traducir textos de interfaz. Había que pensar en rutas, organización de contenido, consultas por locale, navegación, fechas y, sobre todo, en cómo hacer que otro proyecto pudiera consumir este tema sin hacks raros.
-
-> Placeholder de imagen: estructura de carpetas mostrando `content/es/` y `content/en/` con el mismo árbol de artículos.
-
-Lo primero fue aceptar algo incómodo: si el contenido crece, una estructura improvisada te explota en la cara. Y si además quieres que el tema viva como paquete, el desorden deja de ser una molestia local y se convierte en deuda para cada deploy.
-
-## La parte multilenguaje no era solamente traducir strings
-
-Lo más obvio fue mover los textos de interfaz a archivos de locale. Eso sale relativamente rápido. Lo menos obvio fue asumir que el contenido también necesitaba una convención clara.
-
-Terminé con una estructura por locale, algo así como `content/es/...` y `content/en/...`, y dentro de ambos árboles la misma jerarquía para artículos. Eso me dejó una conclusión práctica: para este proyecto, el nombre del mes funciona como un segmento de ruta, no como una pieza semántica que Nuxt traduzca por mí.
-
-En otras palabras: si el folder se llama `april`, Nuxt lo va a tratar como `april` tanto en español como en inglés. No le importa si el locale es `es` o `en`; le importa que la ruta exista. Eso me gustó porque me permite una convención única para assets, contenido y URLs. Tiene un costo, claro: una URL en español puede terminar siendo algo como `/es/articles/2026/april/...`. A mí no me molesta. De hecho, prefiero esa consistencia antes que estar peleando con nombres de carpetas distintos para el mismo mes.
-
-## Ordenar el contenido fue lo que hizo posible todo lo demás
-
-Una vez que la estructura quedó clara, el resto empezó a caer por su propio peso.
-
-Las consultas de contenido ya podían apuntar al locale correcto. La navegación podía filtrar por subárbol. El formateo de fechas podía depender del idioma activo. Y, algo que me importaba bastante, el proyecto consumidor ya no tenía que adivinar cómo debía organizar el contenido para que el tema funcionara.
-
-Ese fue uno de esos momentos donde te das cuenta de que la “feature visible” era multilenguaje, pero la mejora real era otra: ahora el fork tenía una forma reconocible. Ya parecía un paquete, no una carpeta con suerte.
-
-> Placeholder de imagen: captura del sitio mostrando cambio de idioma y listado de artículos funcionando por locale.
 
 ## El paso a paso para conectar GitHub con npmjs sin vivir pegado a un token
 
@@ -119,11 +93,3 @@ Porque ahí ya no estás viendo solo commits. Estás viendo distribución.
 Y eso, para un fork que empezó como una personalización, me parece una buena señal. Quiere decir que el proyecto ya cruzó esa línea donde deja de ser “mi copia modificada” y empieza a comportarse como una pieza reutilizable.
 
 ## Lo que me llevaría de todo esto
-
-Si hoy tuviera que resumir la experiencia en una sola frase, sería esta: dar soporte multilenguaje fue la excusa; ordenar el proyecto y profesionalizar la publicación fue el trabajo real.
-
-Traducir botones es fácil. Definir una convención de contenido que no se rompa, publicar sin depender de rituales manuales y hacer que el paquete viva bien fuera del repo, eso ya es otro nivel de disciplina.
-
-Y creo que esa es la parte que más me gusta de este tipo de cambios: empiezas persiguiendo una feature pequeña y terminas arreglando la forma en que piensas el proyecto.
-
-Si un fork va a vivir más de una semana, mejor tratarlo desde temprano como producto. Te ahorras caos. Y, de paso, te regalas ese pequeño gusto de verlo publicado como se debe.
