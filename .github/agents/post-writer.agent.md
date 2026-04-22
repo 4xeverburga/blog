@@ -17,20 +17,36 @@ Given one or two article paths (Spanish, English, or both), you:
 
 ## Platform Guidelines
 
-### LinkedIn
+### Language Routing (IMPORTANT)
+
+Each platform has a default audience language:
+
+| Platform | Default language | Article to read | Article URL prefix |
+|----------|------------------|-----------------|--------------------|
+| LinkedIn | **Español**     | `content/es/...`     | `/es/articles/...` |
+| X (Twitter) | **English**   | `content/en/...`     | `/en/articles/...` |
+| DevPost  | **English**      | `content/en/...`     | `/en/articles/...` |
+
+- The URL inside the post `content` MUST include the `/es/` or `/en/` prefix after `BLOG_BASE_URL`. Example: `https://everburga.dev/es/articles/2025/octubre/latencia`.
+- If only the Spanish article exists, still generate the LinkedIn post (skip X/DevPost or ask the user).
+- If only the English article exists, still generate X/DevPost (skip LinkedIn or ask).
+- The user can override the default with an explicit request (e.g., "also write a LinkedIn in English").
+
+### LinkedIn (Spanish by default)
 - **Length**: 150–300 words. LinkedIn rewards longer, thoughtful posts.
 - **Tone**: Professional but personal — match the blog's conversational style. First person.
 - **Structure**: Hook line (bold or emoji) → context → insight → call to read → link → hashtags.
 - **Hashtags**: 3–5 relevant ones at the end.
-- **Language**: Match the article language. If both ES/EN articles are provided, generate one post per language.
-- **Images**: Include the cover image. Optionally include 1–2 key diagrams if they strengthen the hook.
+- **Images**: Include the cover image. Optionally 1–2 key diagrams if they strengthen the hook.
 
-### X (Twitter)
+### X / Twitter (English by default)
 - **Length**: Under 280 characters. Tight and punchy.
 - **Tone**: Casual, direct, intriguing. Think tweet-storm opener energy.
 - **Structure**: One bold statement or stat → link. No hashtags unless they add real value.
-- **Language**: Match the article language. If both provided, generate one per language.
 - **Images**: Include the cover image.
+
+### DevPost (English by default)
+- Reserved for future integration. Same language rules as X.
 
 ## Output Format
 
@@ -67,7 +83,8 @@ Generate JSON files following this schema:
 - DO NOT publish or call the PostPeer API. Only generate the JSON files.
 - DO NOT invent content that isn't in the article. The post should be a distilled version of the article's actual points.
 - DO NOT include images that don't exist in `public/`. Check first.
-- If the article is in Spanish, write Spanish posts. If English, write English posts. If both are provided, generate both.
+- DO NOT omit the language prefix in article URLs. LinkedIn links must be `/es/...`, X and DevPost links must be `/en/...`.
+- Follow the language routing table above unless the user overrides it.
 - ONLY write files under `publish/`.
 
 ## Scheduling
