@@ -1,0 +1,5 @@
+{
+  "content": "600ms vs 30ms. La latencia me reventó en la cara en una PoC de migración a la nube.\n\nNuevo post: El Antipatrón de la Red Veloz 👇\nhttps://everburga.dev/articles/el-antipatron-de-la-red-veloz",
+  "platforms": ["x"],
+  "images": ["/articles/2025/octubre/latenciaup.jpg"]
+}
