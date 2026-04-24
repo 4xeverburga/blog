@@ -2,12 +2,16 @@
 
 This workspace uses custom agents for blog content creation and social media publishing.
 
+## Extra
+You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -preset slow -acodec aac -b:a 96k output.mp4
+
+
 ## Available Agents
 
 ### Article Writer
 - **File**: `.github/agents/article-writer.agent.md`
 - **Invoke**: `@Article Writer`
-- **Purpose**: Draft, edit, and brainstorm blog articles in Ever's conversational Spanish style.
+- **Purpose**: Draft, edit, and brainstorm blog articles in Ever's conversational style.
 - **Skills**: Reads article files, generates frontmatter, places images with centered HTML blocks, follows the blog's narrative arc (hook → context → discovery → analysis → takeaway).
 - **Scope**: Only edits files under `content/` and `public/`.
 
