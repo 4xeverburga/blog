@@ -20,7 +20,7 @@ head:
 
 El diseño de interfaces es complejo. A pesar de que me gusta mucho la pintura y el aspecto visual de las cosas, como a muchos desarrolladores, mis esfuerzos no dan para aprender tanto.
 
-Antes, con ayuda de Claude y una gran lista de requerimientos, logré desplegar mi aplicación HablemosManga. Con un diseño frío y genérico. Robótico. 
+Antes, con ayuda de Claude y una gran lista de requerimientos, logré desplegar mi aplicación [HablemosManga](https://hablemosmanga.kekeros.com). Con un diseño frío y genérico. Robótico. 
 
 <p align="center">
   <video src="/articles/2026/april/hablemos_manga_antes.mp4" controls></video>
