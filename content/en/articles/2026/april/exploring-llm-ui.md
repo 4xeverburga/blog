@@ -20,7 +20,7 @@ head:
 
 Interface design is hard. Even though I really like painting and the visual side of things, like a lot of developers, my bandwidth just does not stretch far enough to learn all of it properly.
 
-Before this, with Claude's help and a long list of requirements, I managed to ship my app HablemosManga. It worked, but the design felt cold and generic. Robotic.
+Before this, with Claude's help and a long list of requirements, I managed to ship my app [HablemosManga](https://hablemosmanga.kekeros.com). It worked, but the design felt cold and generic. Robotic.
 
 <p align="center">
   <video src="/articles/2026/april/hablemos_manga_antes.mp4" controls></video>
