@@ -12,7 +12,11 @@ head:
       content: design systems, DESIGN.md, google stitch, claude code, gemini, llm ui, interface design, ai coding
 ---
 
-# Improving My App's Vibes with DESIGN.md
+# Improving My App's <span aria-label="Vibes"><span style="color:#ff5c8a;">V</span><span style="color:#ff9f43;">i</span><span style="color:#ffd166;">b</span><span style="color:#2ec4b6;">e</span><span style="color:#3a86ff;">s</span></span> with DESIGN.md
+<p align="center">
+<span aria-label="VIBES"><span style="color:#ff5c8a;">V</span><span style="color:#ff9f43;">I</span><span style="color:#ffd166;">B</span><span style="color:#2ec4b6;">E</span><span style="color:#3a86ff;">S</span></span>
+</p>
+
 
 Interface design is hard. Even though I really like painting and the visual side of things, like a lot of developers, my bandwidth just does not stretch far enough to learn all of it properly.
 

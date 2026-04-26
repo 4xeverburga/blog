@@ -1,0 +1,7 @@
+{
+  "content": "The hard part of publishing my Nuxt theme was not i18n. It was the boring bit: getting GitHub, npm scope, CI, and trusted publishing to agree.\n\nI wrote up the workflow here:\nhttps://4verburga.kekeros.com/en/articles/2026/april/how-i-made-my-fork-bilingual-and-published-it-right",
+  "platforms": ["x"],
+  "images": [
+    "/articles/2026/april/el_blog_renace.png"
+  ]
+}

@@ -60,11 +60,18 @@ Public files live in `public/articles/<year>/<month>/`. Alert the user if a refe
 
 Articles live at:
 ```
-content/articles/<year>/<month>/<slug>.md
+content/<locale>/articles/<year>/<month>/<slug>.md
 ```
 
 Use lowercase, hyphen-separated slugs. Example: `el-antipatro-de-la-red-veloz.md`.
 
+For bilingual articles, the Spanish and English versions MUST use the same slug, and that slug must be in English for URL consistency.
+
+Example:
+- `content/es/articles/2026/april/how-i-made-my-fork-bilingual-and-published-it-right.md`
+- `content/en/articles/2026/april/how-i-made-my-fork-bilingual-and-published-it-right.md`
+
+Do not translate the slug between languages.
 ## Workflow
 
 When the user gives you a topic or asks to work on an existing article:
