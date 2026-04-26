@@ -15,11 +15,11 @@ head:
 # Cómo volví mi fork multilenguaje y lo publiqué bien
 
 Este post marca el renacer de mi blog. No porque ahora tenga ideas a desbordar que contar al mundo; simplemente porque por fin volví a tocarlo en serio. 
-Recuerdo ver una publicación sobre el creador de OpenClaw: decenas de repos, el primer viral. 
+Recuerdo ver una publicación sobre el creador de OpenClaw: decenas de repos, el primer viral fue OpenClaw.
 
-Es como la vida, pensé. Así que seguimos.
+Es como la vida, pensé. De muchos tiros alguno da en el blanco. Así que seguimos.
 
-Ahora que he vuelto y ha salido Claude 4.6 y demás, todo es muy incierto. Mis propias correcciones que ahora te comparto fueron contrubuidas en su mayor parte por Claude. No sé cuánto crédito debería tomar. Si por curiosidad sigues leyendo y te interesa cómo publicar a node, te dejo aquí abajo mi brief 
+Ahora que he vuelto y ha salido Claude 4.6 y demás, todo es muy incierto. Mis propias correcciones que ahora te comparto fueron contribuidas en su mayor parte por Claude. No sé cuánto crédito debería tomar. Si por curiosidad sigues leyendo y te interesa cómo publicar a node, te dejo aquí abajo mi brief:
 
 ## Índice
 1. [Lo que sí trabajé](#lo-que-si-trabaje)
