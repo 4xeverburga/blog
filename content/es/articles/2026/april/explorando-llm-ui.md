@@ -1,6 +1,6 @@
 ---
 layout: article
-cover: /articles/2026/april/fork-multilenguaje-cover.avif
+cover: /articles/2026/april/portada_hablemos_manga.png
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
