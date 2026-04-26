@@ -1,0 +1,5 @@
+{
+  "content": "🚀 Nuevo artículo en el blog: \"El Antipatrón de la Red Veloz\"\n\nLos microservicios y la nube tienen un costo oculto de latencia. 600ms vs 30ms me reventó en la cara durante una PoC.\n\n¿Estás mirando las hojas del árbol en lugar del bosque?\n\nhttps://everburga.dev/articles/el-antipatron-de-la-red-veloz\n\n#CloudComputing #Microservicios #Latencia #SoftwareArchitecture",
+  "platforms": ["linkedin"],
+  "images": ["/articles/2025/octubre/latenciaup.jpg"]
+}
