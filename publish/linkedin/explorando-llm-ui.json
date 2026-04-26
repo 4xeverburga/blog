@@ -2,7 +2,6 @@
   "content": "\"Con un diseño frío y genérico. Robótico.\"\n\nEso era HablemosManga antes del rediseño. Programar con LLMs me aceleró bastante; diseñar mejor, no. En el post cuento cómo pasé de improvisar prompts a probar DESIGN.md como sistema más consistente. Menos humo, mejores resultados.\n\nhttps://4verburga.kekeros.com/es/articles/2026/april/exploring-llm-ui",
   "platforms": ["linkedin"],
   "images": [
-    "/articles/2026/april/portada_hablemos_manga.png",
-    "/articles/2026/april/stitch_designmd.png"
+    "/articles/2026/april/portada_hablemos_manga.png"
   ]
 }

@@ -74,10 +74,15 @@ mapfile -t IMAGES < <(jq -r '.images // [] | .[]' "$POST_JSON")
 build_platform_entry() {
   local platform="$1"
   local account_var
+  local api_platform="$platform"
 
   case "$platform" in
     linkedin) account_var="POSTPEER_LINKEDIN_ACCOUNT_ID" ;;
-    x)        account_var="POSTPEER_X_ACCOUNT_ID" ;;
+    x)
+      account_var="POSTPEER_X_ACCOUNT_ID"
+      # PostPeer API expects "twitter" as the platform name.
+      api_platform="twitter"
+      ;;
     *)
       echo "Warning: unknown platform '$platform', skipping." >&2
       return
@@ -90,7 +95,7 @@ build_platform_entry() {
     exit 1
   fi
 
-  jq -n --arg platform "$platform" --arg accountId "$account_id" \
+  jq -n --arg platform "$api_platform" --arg accountId "$account_id" \
     '{platform: $platform, accountId: $accountId}'
 }
 

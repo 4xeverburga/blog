@@ -2,7 +2,6 @@
   "content": "\"Vi el repositorio del creador de OpenClaw y su mayor proyecto llegó después de años. Hoy me motiva a revivir mi blog.\"\n\nVolví al blog y, ya que estaba, ordené mi fork bilingüe y su publicación en npm y GitHub Packages. En el post dejo lo que sí importa: CI antes de publicar, dev con sufijo por commit, main limpio y trusted publishing para no vivir de secretos eternos. Menos épica, menos fricción.\n\nhttps://4verburga.kekeros.com/es/articles/2026/april/how-i-made-my-fork-bilingual-and-published-it-right",
   "platforms": ["linkedin"],
   "images": [
-    "/articles/2026/april/el_blog_renace.png",
-    "/articles/2026/april/trusted_publisher_npmjs.png"
+    "/articles/2026/april/el_blog_renace.png"
   ]
 }
