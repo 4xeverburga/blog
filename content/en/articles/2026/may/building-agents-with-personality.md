@@ -103,7 +103,7 @@ One famous example of how badly the impact of social interaction was underestima
   <img src="/articles/2026/june/agent-personality-clippit.png" alt="Clippit, the Office assistant" title="Clippit in Office 97">
 </p>
 
-Steven Sinofsky (2021) says that Clippy was built around a real interaction pattern from inexperienced users who would ask the office guru for help. That is what they wanted to replicate.
+Steven Sinofsky from Microsoft (2021) says that Clippy was built around a real interaction pattern from inexperienced users who would ask the office guru for help. That is what they wanted to replicate.
 
 It still did not get the reception they expected, and it was phased out in later updates.
 
