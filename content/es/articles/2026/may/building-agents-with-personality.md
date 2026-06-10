@@ -103,7 +103,7 @@ Un ejemplo célebre de cómo se subestimó el impacto de la interacción social 
   <img src="/articles/2026/june/agent-personality-clippit.png" alt="Clippit, el asistente de Office" title="Clippit en Office 97">
 </p>
 
-Steven Sinofsky from Microsoft (2021) cuenta que para el desarrollo de Clippy se basaron en una interacción real de usuarios no experimentados que consultaban con el gurú de su oficina. Eso es lo que querían replicar.
+Steven Sinofsky de Microsoft (2021) cuenta que para el desarrollo de Clippy se basaron en una interacción real de usuarios no experimentados que consultaban con el gurú de su oficina. Eso es lo que querían replicar.
 
 Aunque no tuvo la aceptación que esperaban y se descontinuó en sucesivas actualizaciones.
 
