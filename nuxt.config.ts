@@ -15,5 +15,7 @@ export default defineNuxtConfig({
     id: process.env.GOOGLE_ANALYTICS_ID
   },
 
+  css: ['~/assets/local.css'],
+
   compatibilityDate: '2024-09-06'
 })
