@@ -38,7 +38,7 @@ Lo que este tutorial cubre:
 
 - Creación de la App en Azure Entra ID. Aquí se gestionan los permisos y es la cara visible de tu Agente para todo Microsoft en el mismo tenant.
 - Configuración de Azure Bot services. Esta es la API de integración para la suite de MS 365.
-- Integración con tu Agente en GCP, Azure, LangGraph self-hosted o lo que sea que hayas desarrollado. Aquí vemos cómo lo conectas con Azure Bot Services.
+- Integración con tu Agente propio, LangGraph self-hosted o lo que sea que hayas desarrollado. Aquí vemos cómo lo conectas con Azure Bot Services.
 - Publicación en Teams: Reglas de exclusión de usuarios, íconos, logos y versionamiento.
 - Detallitos de CX, D:
 
@@ -93,14 +93,10 @@ load_dotenv(find_dotenv(".prd.env"))
 
 from botbuilder.integration.aiohttp import CloudAdapter, ConfigurationBotFrameworkAuthentication
 
-from src.ext.http_adapter import HTTPAdapter
-from src.ext.agent_engine_adapter import AgentEngineAdapter
-from src.ext.feedback_adapter import DefaultFeedbackHandler
 from src.ext.teams_incoming_adapter import BotInconmingEventsHandler
 from src.app.bot_service.service import BotService
-from src.ext.firestore_session_adapter import FirestoreAdapter
+from src.ext.session_adapter import SessionStoreAdapter
 from src.app.session_watcher_service.service import SessionWatcher
-from src.ext.feedback_adapter import BigQueryFeedbackRepository
 
 import logging
 
@@ -112,15 +108,13 @@ logging.basicConfig(
 
 logger = logging.getLogger(__name__)
 
-PORT = int(os.environ.get("PORT", "3978"))
+PORT = int(os.environ.get("SVC_LISTEN_PORT", "3978"))
 APP_ID = os.environ.get("MICROSOFT_APP_ID", "")
 APP_PASSWORD = os.environ.get("MICROSOFT_APP_PASSWORD", "")
 APP_TYPE = os.environ.get("MICROSOFT_APP_TYPE", "")
 APP_TENANTID = os.environ.get("MICROSOFT_APP_TENANT_ID", "")
-MAX_IDLE_TIME = int(os.environ.get("APP_MAX_IDLE_TIME"))  # secs
-ALERT_TIME = int(os.environ.get("APP_ALERT_TIME"))
-BQ_DATASET_ID = os.environ.get("BIGQUERY_DATASET_ID")
-PROJECT_ID= os.environ.get("PROJECT_ID")
+MAX_IDLE_TIME = int(os.environ.get("SESSION_IDLE_LIMIT_SECS"))  # secs
+ALERT_TIME = int(os.environ.get("SESSION_IDLE_WARN_SECS"))
 
 print(f"Configuration loaded. App ID: {APP_ID}, Port: {PORT}")
 logger.info(f"✓ App ID: {APP_ID}")
@@ -145,35 +139,29 @@ config = BotConfig()
 BOT_CLOUD_ADAPTER = CloudAdapter(ConfigurationBotFrameworkAuthentication(config, logger=logger))
 
 
-agent_backend = os.environ.get("AGENT_BACKEND", "cloud_run").strip().lower()
-return_last_message_only = os.environ.get("AGENT_RETURN_LAST_MESSAGE_ONLY", "true").strip().lower() in ("1", "true", "yes", "on")
-query_url = os.environ.get("AGENT_ENGINE_QUERY_URL")
+return_last_message_only = os.environ.get("BOT_BACKEND_LAST_MSG_ONLY", "true").strip().lower() in ("1", "true", "yes", "on")
+query_url = os.environ.get("BOT_BACKEND_ENDPOINT")
 if not query_url:
-    raise ValueError("AGENT_ENGINE_QUERY_URL is required when AGENT_BACKEND=agent_engine_rest")
+    raise ValueError("BOT_BACKEND_ENDPOINT is required")
 
-chatbot_adapter = AgentEngineAdapter(
+chatbot_adapter = AgentEngineADKAdapter(
     query_url=query_url,
-    timeout_seconds=float(os.environ.get("AGENT_ENGINE_TIMEOUT_SECONDS", "60")),
+    timeout_seconds=float(os.environ.get("BOT_BACKEND_TIMEOUT_SECS", "60")),
     return_last_message_only=return_last_message_only,
-    class_method=os.environ.get("AGENT_ENGINE_CLASS_METHOD", "async_stream_query"),
+    class_method=os.environ.get("BOT_BACKEND_CLASS_METHOD", "async_stream_query"),
 )
 logger.info("Agent Engine REST adapter initialized as primary chatbot adapter")
 
-data_store = None
-firestore_db = os.environ.get("FIRESTORE_DB")
-
-data_store = FirestoreAdapter(
-    project_id=PROJECT_ID,
-    database_id=firestore_db,
+# Plug in whatever session store you use (a database, cache, etc.)
+data_store = SessionStoreAdapter(
+    connection_string=os.environ.get("DATASTORE_DSN"),
 )
-logger.info("FirestoreAdapter initialized for session storage")
+logger.info("Session store adapter initialized")
 
-feedback_repository = BigQueryFeedbackRepository(
-    project_id=PROJECT_ID,
-    dataset_id=BQ_DATASET_ID,
-    table_id="feedback_table"
+# Plug in whatever feedback storage you use
+feedback_repository = FeedbackRepository(
+    connection_string=os.environ.get("FEEDBACK_DSN"),
 )
-
 
 feedback_handler = DefaultFeedbackHandler(feedback_repository)
 
