@@ -23,7 +23,7 @@ Even if the author didn't flag it, scan the whole draft for:
 - Bearer tokens / JWTs, API keys, client secrets, connection strings.
 - IP addresses, internal hostnames, tunnel URLs (e.g. `ngrok-free.app`), request IDs, trace IDs.
 - App IDs, tenant IDs, conversation IDs, or any GUID pulled from real logs.
-- Company or client names — including abbreviations hidden inside identifiers (e.g. a bot name like `agente-mesa-de-ayuda-kyn-dev` leaks a company abbreviation even if no one wrote "Kyndryl" in prose). Replace with a fully generic equivalent (e.g. `agente-mesa-de-ayuda-dev`).
+- Company or client names — including abbreviations hidden inside identifiers (e.g. a bot name like `agente-mesa-de-ayuda-kyn-dev` leaks a company abbreviation even if no one wrote "Kyndryl" in prose). Replace with a fully generic equivalent (e.g. `agente-msteams`).
 - Real GitHub org/repo names or URLs — replace with the same generic naming pattern already used elsewhere in the article (or the blog) if one exists.
 
 When redacting raw HTTP/log dumps, replace tokens/IDs with clearly-fake placeholders (`<REDACTED_TOKEN>`, `00000000-0000-0000-0000-000000000000`, `xxx.xxx.xxx.xxx`) rather than deleting the whole block, so the structure stays useful as a reference. If you are not sure whether something is sensitive, flag it in your final report instead of guessing.
@@ -51,13 +51,19 @@ When redacting raw HTTP/log dumps, replace tokens/IDs with clearly-fake placehol
 
 ### 5. Turn loose URLs into citations
 
-Bare URLs dropped inline in the body (a link on its own line, or pasted mid-sentence) should not stay there. Convert them into numbered citations and collect them in a references section at the end of the article (`## Referencias` / `## References`, matching the article's language):
+Bare URLs dropped inline in the body (a link on its own line, or pasted mid-sentence) should not stay there. Convert them into numbered citations and collect them in a references section at the end of the article (`## Referencias` / `## References`, matching the article's language).
 
-- Replace the inline bare URL with a numbered citation marker (e.g. `[1]`) at the point where it's referenced.
-- Add a corresponding entry at the end of the references section, IEEE-style: `[1] <Title/description of the source>. Available: <URL>`. If the draft gives no title/context for the link, use a reasonable short description of what the link is (e.g. the page title if you can infer it, or the domain + topic) rather than leaving it untitled.
-- Reuse existing numbering already present in the article — don't restart or renumber citations that already exist and are correctly formatted.
+This site renders markdown through Nuxt Content's MDC parser, which has two gotchas confirmed by live testing — follow this exact recipe to avoid them:
+
+- **Never write a bare `[n]` citation marker.** MDC treats a standalone `[...]` as inline-span syntax and silently strips the brackets, so `[1]` renders as just `1` with no link at all. Always make the marker a real markdown link: `[[n]](#ref-n)` — this renders as a clickable `[n]`.
+- **Never use GFM footnote syntax (`[^n]` / `[^n]: ...`).** The markdown renderer auto-generates its own separate "Footnotes" heading and list for these, which duplicates/orphans a manually-written `## Referencias` heading (confirmed to render as two stacked headings, one empty). Do not use `[^n]` anywhere in article bodies.
+- Build the references section as a normal ordered markdown list (`1.`, `2.`, ...) — never manual `[n]` bullets or bare consecutive lines (those collapse into one paragraph without a blank line or list marker between them). Each list item starts with an inline anchor, then the IEEE-style description, then the URL as a real markdown link so it has a clickable `href`:
+  `1. <span id="ref-1"></span>Microsoft. Agents Toolkit fundamentals. Available: [https://example.com/page](https://example.com/page)`
+- The inline citation marker links to that anchor: `... realiza pasos similares [[1]](#ref-1).` Reuse existing numbering/anchors already present in the article — don't restart or renumber citations that already exist and are correctly formatted.
+- If a citation must go inside a raw HTML block (e.g. an `<em>` caption inside a `<p align="center">` image block), markdown syntax does NOT get parsed there — write a real `<a href="#ref-n">[n]</a>` HTML tag instead of markdown link syntax.
 - Links that are clearly meant to be inline UI elements (e.g. already-formatted markdown links `[text](url)` used mid-sentence as a natural reference) are fine as-is — this rule targets bare/loose URLs, not existing proper markdown links.
 - If the references section doesn't exist yet, create it as the last section of the article.
+- After making these edits, if you have access to a browser tool and the dev server is running, load the article page and visually confirm: the citation markers show `[n]` as clickable links, and the references section shows a single heading with a numbered list of working hyperlinks (no duplicate/empty headings). If you can't validate live, say so explicitly in your report.
 
 ## Constraints
 
