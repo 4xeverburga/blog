@@ -9,8 +9,13 @@ date: 2026-07-07T10:00:00.000Z
 head:
   meta:
     - name: keywords
-      content: agentes, adk, agent development kit, microsoft teams, m365 agents toolkit, azure bot service, sharepoint, rag engine, maquina de estados, chatbots, mesa de ayuda
+      content: agentes, microsoft teams, m365 agents toolkit, azure bot service, sharepoint, rag engine, máquina de estados, chatbots, mesa de ayuda
 ---
+
+
+agent toolkit dev flow.png 
+
+-- Tomado de https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals
 
 # De Idea a Ms Teams: Desplegando un Agente Con el Que Tu Organización Puede Interactuar
 
@@ -21,49 +26,70 @@ Si quieres máxima personalización, este tutorial te va a gustar.
 
 ## Prerrequisitos.
 
-Si tienes problemas con que tu administrador de Azure te otorgue permisos documentados un artículo de un nadie, este blog de Microsoft realiza pasos similares a los de este artículo.
-https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals
+Si tienes problemas con que tu administrador de Azure te otorgue permisos documentados en un artículo de un don nadie, este blog de Microsoft realiza pasos similares a los de estos artículos [1] https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals. 
 
 - Rol de Application Developer en la suscripción de Azure donde estará asignado tu proyecto.
-- Licencia de MS Teams Coporativa. Como alternativa existe un programa de prueba de Microsoft 365 Dev que puedes probar, pero son 90 días y de todas maneras necesitas usar una suscripción activa de Azure. 
+- Licencia de MS Teams Corporativa. Como alternativa existe un programa de prueba de Microsoft 365 Dev que puedes probar, pero son 90 días y de todas maneras necesitas usar una suscripción activa de Azure. 
 Resulta redundante hacer todo el trabajo allí en lugar de aislar un grupo de usuarios en la consola de admin de 365 de tu organización.
 
-## Outline 
+## Contenido 
 Lo que este tutorial cubre:
 
 - Creación de la App en Azure Entra ID. Aquí se gestionan los permisos y es la cara visible de tu Agente para todo Microsoft en el mismo tenant.
 - Configuración de Azure Bot services. Esta es la API de integración para la suite de MS 365.
-- Integración con tu Agente en GCP, AZURE, LangGraph self-hosted o lo que sea que hayas desarrollado. Aquí vemos cómo lo conectas con Azure Bot Services.
+- Integración con tu Agente en GCP, Azure, LangGraph self-hosted o lo que sea que hayas desarrollado. Aquí vemos cómo lo conectas con Azure Bot Services.
 - Publicación en Teams: Reglas de exclusión de usuarios, íconos, logos y versionamiento.
 - Detallitos de CX, D:
 
-No vamos a ver la lógica del agente. Lo que te interesa, como a mí en su momento, es saber cómo lo despliego en mi suit corporativa. 
+No vamos a ver la lógica del agente. Lo que te interesa, como a mí en su momento, es saber cómo lo despliego en mi suite corporativa. 
 
 
 ## Entra ID 
 
 Azure a veces es una pesadilla. Veamos paso a paso. 
 
-Primero, crea una app con un un nombre y un sufijo 'dev' o 'prd'. Necesitarás hacer esta distinción para poder segregar los usuarios más adelante.
+Primero, crea una app con un nombre y un sufijo 'dev' o 'prd'. Necesitarás hacer esta distinción para poder segregar los usuarios más adelante.
 
-1. entra id tuto.png Ingresa al servicio
-2. app registration add new.png Dale a crear. Single tenant es suficiente para la mayoría de casos de uso. 
-3. app registration panel.png Apunta la App Id. Si necesitas que tu agente interactúe con servicios de Microsoft, la sección de API Permissions será tu amiga. En caso tu Agente no se encuentre en el ecosistema de Azure, una solución rápida es crear un certificado en la sección de Certificates y Secrets. En ese caso te apuntas el Secret que generes.
+1.
+
+<p align="center">
+  <img src="/articles/2026/july/entra-id-tuto.png" alt="Ingresa al servicio de Entra ID" title="Ingresa al servicio">
+  <em>Ingresa al servicio</em>
+</p>
+
+2.
+
+<p align="center">
+  <img src="/articles/2026/july/app-registration-add-new.png" alt="Registro de una nueva app" title="Dale a crear">
+  <em>Dale a crear. Single tenant es suficiente para la mayoría de casos de uso.</em>
+</p>
+
+3.
+
+<p align="center">
+  <img src="/articles/2026/july/app-registration-panel.png" alt="Panel de registro de la app" title="Apunta la App Id">
+  <em>Apunta la App Id.</em>
+</p>
+
+Si necesitas que tu agente interactúe con servicios de Microsoft, la sección de API Permissions será tu amiga. En caso tu Agente no se encuentre en el ecosistema de Azure, una solución rápida es crear un certificado en la sección de Certificates y Secrets. En ese caso te apuntas el Secret que generes.
 
 
 ## Azure Bot Services
 
-1. Crea un Bot con la misma App Id que usaste para Entra Id. No estoy seguro de la razón de esto, pero cuando usaba la Id automática hubo problemas con la aparición del bot en la consola de Admin Microsoft 365.
+Crea un Bot con la misma App Id que usaste para Entra Id. No estoy seguro de la razón de esto, pero cuando usaba la Id automática hubo problemas con la aparición del bot en la consola de Admin Microsoft 365.
 
-2. 
+azure bot services config panel.png
+Aquí los dos elementos más importantes tienen flechas.
 
+El campo de URL endpoint es el endpoint del middleware que construiras a continuación. 
+
+La sección de 'prueba web' te permite probar que tu agente y tu middleware de integración efectivamente funcionan y responden correctamente.
 
 ## Integración
 
 1. Esto es una versión simplificada de un adaptador que me funciona.
 
-you should anonimize th is code block and also remove the references to adk as that is not the topic of this article
-<code block>
+```python
 import os
 from dotenv import load_dotenv, find_dotenv
 load_dotenv(find_dotenv(".prd.env"))
@@ -71,7 +97,7 @@ load_dotenv(find_dotenv(".prd.env"))
 from botbuilder.integration.aiohttp import CloudAdapter, ConfigurationBotFrameworkAuthentication
 
 from src.ext.http_adapter import HTTPAdapter
-from src.ext.agent_engine_adk_adapter import AgentEngineADKAdapter
+from src.ext.agent_engine_adapter import AgentEngineAdapter
 from src.ext.feedback_adapter import DefaultFeedbackHandler
 from src.ext.teams_incoming_adapter import BotInconmingEventsHandler
 from src.app.bot_service.service import BotService
@@ -122,17 +148,17 @@ config = BotConfig()
 BOT_CLOUD_ADAPTER = CloudAdapter(ConfigurationBotFrameworkAuthentication(config, logger=logger))
 
 
-adk_backend = os.environ.get("ADK_BACKEND", "cloud_run").strip().lower()
-return_last_message_only = os.environ.get("ADK_RETURN_LAST_MESSAGE_ONLY", "true").strip().lower() in ("1", "true", "yes", "on")
-query_url = os.environ.get("ADK_AGENT_ENGINE_QUERY_URL")
+agent_backend = os.environ.get("AGENT_BACKEND", "cloud_run").strip().lower()
+return_last_message_only = os.environ.get("AGENT_RETURN_LAST_MESSAGE_ONLY", "true").strip().lower() in ("1", "true", "yes", "on")
+query_url = os.environ.get("AGENT_ENGINE_QUERY_URL")
 if not query_url:
-    raise ValueError("ADK_AGENT_ENGINE_QUERY_URL is required when ADK_BACKEND=agent_engine_rest")
+    raise ValueError("AGENT_ENGINE_QUERY_URL is required when AGENT_BACKEND=agent_engine_rest")
 
-chatbot_adapter = AgentEngineADKAdapter(
+chatbot_adapter = AgentEngineAdapter(
     query_url=query_url,
-    timeout_seconds=float(os.environ.get("ADK_TIMEOUT_SECONDS", "60")),
+    timeout_seconds=float(os.environ.get("AGENT_ENGINE_TIMEOUT_SECONDS", "60")),
     return_last_message_only=return_last_message_only,
-    class_method=os.environ.get("ADK_AGENT_ENGINE_CLASS_METHOD", "async_stream_query"),
+    class_method=os.environ.get("AGENT_ENGINE_CLASS_METHOD", "async_stream_query"),
 )
 logger.info("Agent Engine REST adapter initialized as primary chatbot adapter")
 
@@ -185,76 +211,96 @@ if __name__ == "__main__":
         web.run_app(app, host="0.0.0.0", port=PORT)
     except Exception as error:
         raise error
-<code/>
+```
 
-Puedes revisar más implementaciones en el Quickstart de Microsoft: https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python
-Para mi opinión la página está abandonada, así que no asumas que funcionará tal cual.
+Puedes revisar más implementaciones en el Quickstart de Microsoft [2].
+En mi opinión la página está abandonada, así que no asumas que funcionará tal cual.
 
 
 
 2. Antes de dar por terminada tu integración no olvides recopilar estas variables correctamente. Son necesarias para desencriptar la comunicación de Azure en el entorno productivo. 
-<code/>
+
+```bash
 MicrosoftAppType= SingleTenant
 MicrosoftAppId= # client id you just used for entra id and bot services
 MicrosoftAppPassword= # client secret
 MicrosoftAppTenantId=
-<code block>
+```
 
-El client secret solo es necesario para integraciones fuera del ecosistema de Azure. Es preferible usar Oauth2 o un método libre de secretos.
+El client secret solo es necesario para integraciones fuera del ecosistema de Azure. Es preferible usar OAuth2 o un método libre de secretos.
 
-3. Y también tienes un bonito playground para que pruebes tu agente incluso antes de tenerlo en Microsoft 365.
+### Y también tienes un bonito playground para que pruebes tu agente incluso antes de tenerlo en Microsoft 365
 
 Para que no falle debes dejar vacías las variables que vimos en el paso #2. 
 Si no lo haces el playground no podrá desencriptar las comunicaciones. Y en mi experiencia ha sido complicado debuggear cuando falla.
 
-microsoft 365 playground.png
+<p align="center">
+  <img src="/articles/2026/july/microsoft-365-playground.png" alt="Playground de Microsoft 365" title="Playground de Microsoft 365">
+  <em>Playground de Microsoft 365</em>
+</p>
 
+
+## Publicación en Teams
+
+### Carga el Archivo Exportado de 365 Toolkit
+
+El proyecto que has configurado previamente genera un bundle. Lo puedes personalizar con el logo que quieres que se muestre. 
+Una versión a color y otra simplificada para las sidebards e íconos pequeños. 
+
+upload app to teams request.png
+
+### Contacta con Tu Administrador de MS 365
+
+Dirígelo a estos enlaces:
+- https://admin.teams.microsoft.com
+- https://admin.microsoft.com
+
+No he podido cargarte pantallas de cómo se ve la consola de administrador y exactamente qué pasos debe tomar tu administrador.
+Pero hazle saber que puede crear lsitas de acceso para la aplicación. 
+
+En específico debería tener una lista de acceso para la aplicación dev, que solo está abierta para unos pocos usuarios testers y desarrollardores.
+Y para la aplicación productiva se puede ir planteado una estretegia disinta.
 
 ## CX!
 
+### ¿Te interesa usar formularios con tu agente?
 
-- Te interesa usar formularios con tu agente? Revisa aquí!
+Las tarjetas adaptativas de toda la vida de Microsoft [3]. Las puedes usar en tu middleware.
+¿Personalización extra? Es el mismo estándar que Power Automate, con el que podrías estar más familiarizado.
 
-https://adaptivecards.microsoft.com/
+### ¿Quieres que ... el ... bot ... escriba? ...
 
-Las tarjetas adaptativas de toda la vida de Microsoft. Las puedes usar en tu middleware.
-¿Personalización extra? Es el mismo estándar que Power Automate, con el que podrías estar más famliarizado.
-
-- ¿Quieres que ... el ... bot ... escriba? ...
-
-<code snipppet, dont anonimize, its already anonimized>
+```python
 # Typying activity: ...
 await turn_context.send_activity(Activity(type=ActivityTypes.typing))
 # Delegate to application service
 response = await self.bot_service.handle_message(text, turn_context)
 await turn_context.send_activity(response)
-<code/>
+```
 
 Con enviar esa actividad es suficiente en lo que tu motor del agente responde.
 
 ## Extra!
-Esto es lo que pude recopilar de las comunicacion que envían los servidores de Azure Bot Services. Te podría ser útil si quieres entender qué tanto puedes obtener de información útil a través del middleware.
+Esto es lo que pude recopilar de las comunicación que envían los servidores de Azure Bot Services. Te podría ser útil si quieres entender qué tanto puedes obtener de información útil a través del middleware.
 
-<-- you should redact all of the pii that could put me in trouble here
-<raw http communications>
-
+```http
 POST /api/messages HTTP/1.1
 Host: localhost:3978
 User-Agent: BF-DirectLine (Microsoft-BotFramework/3.2 +https://botframework.com/ua)
 Content-Length: 719
 Accept: */*
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlVWYy1RTUkzYWwyYVE1MGp3RHNPQ2x4MHRzNCIsIng1dCI6IlVWYy1RTUkzYWwyYVE1MGp3RHNPQ2x4MHRzNCIsInR5cCI6IkpXVCJ9.eyJzZXJ2aWNldXJsIjoiaHR0cHM6Ly93ZWJjaGF0LmJvdGZyYW1ld29yay5jb20vIiwibmJmIjoxNzcyNDczNDgxLCJleHAiOjE3NzI0NzQwODEsImlzcyI6Imh0dHBzOi8vYXBpLmJvdGZyYW1ld29yay5jb20iLCJhdWQiOiIzM2EyNjk4OC00ZjJkLTQxY2EtYjUxZi1hZDMwMGY3YTJiMTgifQ.g295qH2Adgpy-nhk-Rz5k3LrYwJ44_YwZaj_Vx8tIYYI51ECtryLCX4NrGJhc3t1LmktpFDZH-z3d7fJcOV07Ufb86oyRqw-9uCu6iTf3xVRogCcIZSKnpL1PDgV3syYRDOWXL4CZdrJ01DyCIXa50THv1BjUmh2plI1rklAT8U-OMfd6UKhFkshKopUP8M2owjwW-T3N0CmZaU_QhVt8_FfxyhucBf8qsJD1OWjFcXtXAEPC6IaNHBHGHZDPreynC083jQomRXlFI5UorNodpqVtr3s59ziXks2SVzKCROoZDmLMzKOTHoo4I6kW98DkktSEPqgjBAT02Wm_uLTqw
+Authorization: Bearer <REDACTED_JWT>
 Channelid: webchat
 Content-Type: application/json; charset=utf-8
-Request-Id: |2c42ab9ff411f696fb4087b4491020fc.9563ed347eaaa5a0.
-Traceparent: 00-2c42ab9ff411f696fb4087b4491020fc-9563ed347eaaa5a0-00
-X-Forwarded-For: 13.73.248.0
-X-Forwarded-Host: f756-158-88-0-17.ngrok-free.app
+Request-Id: |<REDACTED_REQUEST_ID>.<REDACTED_SPAN_ID>.
+Traceparent: 00-<REDACTED_TRACE_ID>-<REDACTED_SPAN_ID>-00
+X-Forwarded-For: xxx.xxx.xxx.xxx
+X-Forwarded-Host: xxxx-xxx-xxx-xx.ngrok-free.app
 X-Forwarded-Proto: https
-X-Ms-Conversation-Id: AK5QVirckD7DdoZroqnJm3-us
+X-Ms-Conversation-Id: <REDACTED_CONVERSATION_ID>
 Accept-Encoding: gzip
 
-{"type":"typing","id":"AK5QVirckD7DdoZroqnJm3-us|IZEJDXiQT9I","timestamp":"2026-03-02T17:44:41.6782359Z","localTimestamp":"2026-03-02T12:44:41.391-05:00","localTimezone":"America/Lima","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"c349c0c3-eaf4-4a42-8191-2b9191958dab","name":""},"conversation":{"id":"AK5QVirckD7DdoZroqnJm3-us"},"recipient":{"id":"agente-mesa-de-ayuda-kyn-dev@FOBFhUgceezvf4qSzRRFvScSJ2JdkjD2B6cmTlLhtwQxFFNH3U2RJQQJ99CBACYeBjFAArohAAABAZBS3REj","name":"agente-mesa-de-ayuda-kyn-dev"},"locale":"en-US","entities":[{"type":"ClientCapabilities","requiresBotState":true,"supportsListening":true,"supportsTts":true}],"channelData":{"clientActivityID":"8za5l45vjvn"}}
+{"type":"typing","id":"<REDACTED_CONVERSATION_ID>|<REDACTED_ACTIVITY_ID>","timestamp":"2026-03-02T17:44:41.6782359Z","localTimestamp":"2026-03-02T12:44:41.391-05:00","localTimezone":"America/Lima","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"00000000-0000-0000-0000-000000000000","name":""},"conversation":{"id":"<REDACTED_CONVERSATION_ID>"},"recipient":{"id":"agente-mesa-de-ayuda-dev@<REDACTED_TOKEN>","name":"agente-mesa-de-ayuda-dev"},"locale":"en-US","entities":[{"type":"ClientCapabilities","requiresBotState":true,"supportsListening":true,"supportsTts":true}],"channelData":{"clientActivityID":"<REDACTED_CLIENT_ACTIVITY_ID>"}}
 
 
 
@@ -264,37 +310,41 @@ Host: localhost:3978
 User-Agent: BF-DirectLine (Microsoft-BotFramework/3.2 +https://botframework.com/ua)
 Content-Length: 662
 Accept: */*
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlVWYy1RTUkzYWwyYVE1MGp3RHNPQ2x4MHRzNCIsIng1dCI6IlVWYy1RTUkzYWwyYVE1MGp3RHNPQ2x4MHRzNCIsInR5cCI6IkpXVCJ9.eyJzZXJ2aWNldXJsIjoiaHR0cHM6Ly93ZWJjaGF0LmJvdGZyYW1ld29yay5jb20vIiwibmJmIjoxNzcyNDczNDgxLCJleHAiOjE3NzI0NzQwODEsImlzcyI6Imh0dHBzOi8vYXBpLmJvdGZyYW1ld29yay5jb20iLCJhdWQiOiIzM2EyNjk4OC00ZjJkLTQxY2EtYjUxZi1hZDMwMGY3YTJiMTgifQ.g295qH2Adgpy-nhk-Rz5k3LrYwJ44_YwZaj_Vx8tIYYI51ECtryLCX4NrGJhc3t1LmktpFDZH-z3d7fJcOV07Ufb86oyRqw-9uCu6iTf3xVRogCcIZSKnpL1PDgV3syYRDOWXL4CZdrJ01DyCIXa50THv1BjUmh2plI1rklAT8U-OMfd6UKhFkshKopUP8M2owjwW-T3N0CmZaU_QhVt8_FfxyhucBf8qsJD1OWjFcXtXAEPC6IaNHBHGHZDPreynC083jQomRXlFI5UorNodpqVtr3s59ziXks2SVzKCROoZDmLMzKOTHoo4I6kW98DkktSEPqgjBAT02Wm_uLTqw
+Authorization: Bearer <REDACTED_JWT>
 Channelid: webchat
 Content-Type: application/json; charset=utf-8
-Request-Id: |8ffc1ca13fdf76ff7f00bde3f83e6bc9.5ef256c2339fc20b.
-Traceparent: 00-8ffc1ca13fdf76ff7f00bde3f83e6bc9-5ef256c2339fc20b-00
-X-Forwarded-For: 13.73.248.0
-X-Forwarded-Host: f756-158-88-0-17.ngrok-free.app
+Request-Id: |<REDACTED_REQUEST_ID>.<REDACTED_SPAN_ID>.
+Traceparent: 00-<REDACTED_TRACE_ID>-<REDACTED_SPAN_ID>-00
+X-Forwarded-For: xxx.xxx.xxx.xxx
+X-Forwarded-Host: xxxx-xxx-xxx-xx.ngrok-free.app
 X-Forwarded-Proto: https
-X-Ms-Conversation-Id: AK5QVirckD7DdoZroqnJm3-us
+X-Ms-Conversation-Id: <REDACTED_CONVERSATION_ID>
 Accept-Encoding: gzip
 
-{"type":"conversationUpdate","id":"BB5CXMwww57","timestamp":"2026-03-02T17:44:41.0353977Z","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"c349c0c3-eaf4-4a42-8191-2b9191958dab"},"conversation":{"id":"AK5QVirckD7DdoZroqnJm3-us"},"recipient":{"id":"agente-mesa-de-ayuda-kyn-dev@FOBFhUgceezvf4qSzRRFvScSJ2JdkjD2B6cmTlLhtwQxFFNH3U2RJQQJ99CBACYeBjFAArohAAABAZBS3REj","name":"agente-mesa-de-ayuda-kyn-dev"},"membersAdded":[{"id":"agente-mesa-de-ayuda-kyn-dev@FOBFhUgceezvf4qSzRRFvScSJ2JdkjD2B6cmTlLhtwQxFFNH3U2RJQQJ99CBACYeBjFAArohAAABAZBS3REj","name":"agente-mesa-de-ayuda-kyn-dev"},{"id":"c349c0c3-eaf4-4a42-8191-2b9191958dab"}]}
+{"type":"conversationUpdate","id":"<REDACTED_ACTIVITY_ID>","timestamp":"2026-03-02T17:44:41.0353977Z","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"00000000-0000-0000-0000-000000000000"},"conversation":{"id":"<REDACTED_CONVERSATION_ID>"},"recipient":{"id":"agente-mesa-de-ayuda-dev@<REDACTED_TOKEN>","name":"agente-mesa-de-ayuda-dev"},"membersAdded":[{"id":"agente-mesa-de-ayuda-dev@<REDACTED_TOKEN>","name":"agente-mesa-de-ayuda-dev"},{"id":"00000000-0000-0000-0000-000000000000"}]}
 
 POST /api/messages HTTP/1.1
 Host: localhost:3978
 User-Agent: BF-DirectLine (Microsoft-BotFramework/3.2 +https://botframework.com/ua)
 Content-Length: 679
 Accept: */*
-Authorization: Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IlVWYy1RTUkzYWwyYVE1MGp3RHNPQ2x4MHRzNCIsIng1dCI6IlVWYy1RTUkzYWwyYVE1MGp3RHNPQ2x4MHRzNCIsInR5cCI6IkpXVCJ9.eyJzZXJ2aWNldXJsIjoiaHR0cHM6Ly93ZWJjaGF0LmJvdGZyYW1ld29yay5jb20vIiwibmJmIjoxNzcyNDczNDgyLCJleHAiOjE3NzI0NzQwODIsImlzcyI6Imh0dHBzOi8vYXBpLmJvdGZyYW1ld29yay5jb20iLCJhdWQiOiIzM2EyNjk4OC00ZjJkLTQxY2EtYjUxZi1hZDMwMGY3YTJiMTgifQ.dulJYKdJcV4aRA3wHCCh7B1n9hbaxT6rmHQN6KnlpMQ7dIQYByPCZxHKSckMmX6HRP_Hn17nXoa73F8WFsXEugL0ksoMZlHUMwYE0UAej7LU0jtbTic83I4lc2zUvpcjKj0XH6WBkBmxYLJw0pmbd6-qBI0LhKrtJpguGemL0FRXtlUlykIcQvv0c92iYT8wcVasYNrCnklUWSM012MKivpi4kzchsEL2QJFAj4mmqc8GKjXXKEQBMbYoJyrZVcXktfgAujzyfa_w4S92QmRyoDeeLxxAAoX617oZw8zJck2_klKzf4qUl0tudrq4tvcCi-p4Asq3RJv98YewsO8nw
+Authorization: Bearer <REDACTED_JWT>
 Channelid: webchat
 Content-Type: application/json; charset=utf-8
-Request-Id: |6f4112bffe49ddaef1e249cc91beedaf.29fdd579b23d2284.
-Traceparent: 00-6f4112bffe49ddaef1e249cc91beedaf-29fdd579b23d2284-00
-X-Forwarded-For: 13.73.248.0
-X-Forwarded-Host: f756-158-88-0-17.ngrok-free.app
+Request-Id: |<REDACTED_REQUEST_ID>.<REDACTED_SPAN_ID>.
+Traceparent: 00-<REDACTED_TRACE_ID>-<REDACTED_SPAN_ID>-00
+X-Forwarded-For: xxx.xxx.xxx.xxx
+X-Forwarded-Host: xxxx-xxx-xxx-xx.ngrok-free.app
 X-Forwarded-Proto: https
-X-Ms-Conversation-Id: AK5QVirckD7DdoZroqnJm3-us
+X-Ms-Conversation-Id: <REDACTED_CONVERSATION_ID>
 Accept-Encoding: gzip
 
-{"type":"message","id":"AK5QVirckD7DdoZroqnJm3-us|0000000","timestamp":"2026-03-02T17:44:42.8691754Z","localTimestamp":"2026-03-02T12:44:42.728-05:00","localTimezone":"America/Lima","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"c349c0c3-eaf4-4a42-8191-2b9191958dab","name":""},"conversation":{"id":"AK5QVirckD7DdoZroqnJm3-us"},"recipient":{"id":"agente-mesa-de-ayuda-kyn-dev@FOBFhUgceezvf4qSzRRFvScSJ2JdkjD2B6cmTlLhtwQxFFNH3U2RJQQJ99CBACYeBjFAArohAAABAZBS3REj","name":"agente-mesa-de-ayuda-kyn-dev"},"textFormat":"plain","locale":"en-US","text":"Hola","attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"0740dlkdm1xx"}}
-<raw text />
+{"type":"message","id":"<REDACTED_CONVERSATION_ID>|<REDACTED_ACTIVITY_ID>","timestamp":"2026-03-02T17:44:42.8691754Z","localTimestamp":"2026-03-02T12:44:42.728-05:00","localTimezone":"America/Lima","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"00000000-0000-0000-0000-000000000000","name":""},"conversation":{"id":"<REDACTED_CONVERSATION_ID>"},"recipient":{"id":"agente-mesa-de-ayuda-dev@<REDACTED_TOKEN>","name":"agente-mesa-de-ayuda-dev"},"textFormat":"plain","locale":"en-US","text":"Hola","attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<REDACTED_CLIENT_ACTIVITY_ID>"}}
+```
 
 
 ## Referencias
+
+[1] Microsoft. Agents Toolkit fundamentals. Available: https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals
+[2] Microsoft. Microsoft 365 Agents SDK Quickstart (Python). Available: https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python
+[3] Microsoft. Adaptive Cards. Available: https://adaptivecards.microsoft.com/
