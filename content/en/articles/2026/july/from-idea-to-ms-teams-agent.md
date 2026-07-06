@@ -4,87 +4,87 @@ cover: /articles/2026/july/ms-teams-agent-architecture.jpg
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
-description: Un agente que muestra una animación de pensamiento, carga de imágenes y más! ...
+description: An agent that shows a thinking animation, image uploads and more! ...
 date: 2026-07-07T10:00:00.000Z
 head:
   meta:
     - name: keywords
-      content: agentes, microsoft teams, m365 agents toolkit, azure bot service, sharepoint, rag engine, máquina de estados, chatbots, mesa de ayuda
+      content: agents, microsoft teams, m365 agents toolkit, azure bot service, sharepoint, rag engine, state machine, chatbots, help desk
 ---
 
 
 <p align="center">
-  <img src="/articles/2026/july/agent-toolkit-dev-flow.png" alt="Flujo de desarrollo del Agents Toolkit" title="Flujo de desarrollo del Agents Toolkit">
-  <em>Tomado de <a href="#ref-1">[1]</a></em>
+  <img src="/articles/2026/july/agent-toolkit-dev-flow.png" alt="Agents Toolkit development flow" title="Agents Toolkit development flow">
+  <em>Taken from <a href="#ref-1">[1]</a></em>
 </p>
 
-# De Idea a Ms Teams: Desplegando un Agente Con el Que Tu Organización Puede Interactuar
+# From Idea to MS Teams: Deploying an Agent Your Organization Can Interact With
 
-A la fecha existe una creciente cantidad de servicios y vías de entrada para desplegar un agente en Ms Teams. Puede ser a través de Copilot, Microsoft 365 o con los servicios de AI Foundry.
-En el fondo todos ellos usan las APIs de Azure Bot Services. 
+There is a growing number of services and entry points to deploy an agent in MS Teams these days. It can be through Copilot, Microsoft 365, or the AI Foundry services.
+Under the hood, all of them use the Azure Bot Services APIs.
 
-Si quieres máxima personalización, este tutorial te va a gustar. 
+If you want maximum customization, you will like this tutorial.
 
-## Prerrequisitos.
+## Prerequisites
 
-Si tienes problemas con que tu administrador de Azure te otorgue permisos documentados en un artículo de un don nadie, este blog de Microsoft realiza pasos similares a los de estos artículos [[1]](#ref-1).
+If you struggle to get your Azure admin to grant permissions documented in some random blog article, this Microsoft post follows steps similar to this one [[1]](#ref-1).
 
-- Rol de Application Developer en la suscripción de Azure donde estará asignado tu proyecto.
-- Licencia de MS Teams Corporativa. Como alternativa existe un programa de prueba de Microsoft 365 Dev que puedes probar, pero son 90 días y de todas maneras necesitas usar una suscripción activa de Azure. 
-Resulta redundante hacer todo el trabajo allí en lugar de aislar un grupo de usuarios en la consola de admin de 365 de tu organización.
+- Application Developer role in the Azure subscription where your project will be assigned.
+- A corporate MS Teams license. As an alternative, there is a Microsoft 365 Dev trial program you can try, but it only lasts 90 days and you still need an active Azure subscription anyway.
+It ends up redundant to do all the work there instead of isolating a group of users in your organization's 365 admin console.
 
-## Contenido 
-Lo que este tutorial cubre:
+## Contents
+What this tutorial covers:
 
-- Creación de la App en Azure Entra ID. Aquí se gestionan los permisos y es la cara visible de tu Agente para todo Microsoft en el mismo tenant.
-- Configuración de Azure Bot services. Esta es la API de integración para la suite de MS 365.
-- Integración con tu Agente propio, LangGraph self-hosted o lo que sea que hayas desarrollado. Aquí vemos cómo lo conectas con Azure Bot Services.
-- Publicación en Teams: Reglas de exclusión de usuarios, íconos, logos y versionamiento.
-- Detallitos de CX, D:
+- Creating the App in Azure Entra ID. This is where permissions are managed, and it is the visible face of your Agent for everyone in the same Microsoft tenant.
+- Configuring Azure Bot Services. This is the integration API for the MS 365 suite.
+- Integration with your own Agent, a self-hosted LangGraph or whatever you built. Here we see how you connect it to Azure Bot Services.
+- Publishing to Teams: user exclusion rules, icons, logos and versioning.
+- A few CX details, D:
 
-No vamos a ver la lógica del agente. Lo que te interesa, como a mí en su momento, es saber cómo lo despliego en mi suite corporativa. 
+We are not going to look at the agent's own logic. What you care about, like I did back then, is how to deploy it into your corporate suite.
 
 
-## Entra ID 
+## Entra ID
 
-Azure a veces es una pesadilla. Veamos paso a paso. 
+Azure can be a nightmare sometimes. Let's go step by step.
 
-Primero, crea una app con un nombre y un sufijo 'dev' o 'prd'. Necesitarás hacer esta distinción para poder segregar los usuarios más adelante.
-
-<p align="center">
-  <img src="/articles/2026/july/entra-id-tuto.png" alt="Ingresa al servicio de Entra ID" title="Ingresa al servicio">
-  <em>Ingresa al servicio</em>
-</p>
+First, create an app with a name and a 'dev' or 'prd' suffix. You will need this distinction later to segregate users.
 
 <p align="center">
-  <img src="/articles/2026/july/app-registration-add-new.png" alt="Registro de una nueva app" title="Dale a crear">
-  <em>Dale a crear. Single tenant es suficiente para la mayoría de casos de uso.</em>
+  <img src="/articles/2026/july/entra-id-tuto.png" alt="Open the Entra ID service" title="Open the service">
+  <em>Open the service</em>
 </p>
 
 <p align="center">
-  <img src="/articles/2026/july/app-registration-panel.png" alt="Panel de registro de la app" title="Apunta la App Id">
-  <em>Apunta la App Id.</em>
+  <img src="/articles/2026/july/app-registration-add-new.png" alt="Registering a new app" title="Click create">
+  <em>Click create. Single tenant is enough for most use cases.</em>
 </p>
 
-Si necesitas que tu agente interactúe con servicios de Microsoft, la sección de API Permissions será tu amiga. En caso tu Agente no se encuentre en el ecosistema de Azure, una solución rápida es crear un certificado en la sección de Certificates y Secrets. En ese caso te apuntas el Secret que generes.
+<p align="center">
+  <img src="/articles/2026/july/app-registration-panel.png" alt="App registration panel" title="Note down the App Id">
+  <em>Note down the App Id.</em>
+</p>
+
+If you need your agent to interact with Microsoft services, the API Permissions section will be your friend. In case your Agent is not part of the Azure ecosystem, a quick fix is to create a certificate in the Certificates and Secrets section. In that case, note down the Secret you generate.
 
 
 ## Azure Bot Services
 
-Crea un Bot con la misma App Id que usaste para Entra Id. No estoy seguro de la razón de esto, pero cuando usaba la Id automática hubo problemas con la aparición del bot en la consola de Admin Microsoft 365.
+Create a Bot with the same App Id you used for Entra ID. I am not sure of the reason behind this, but when I used the automatically generated Id there were issues with the bot showing up in the Microsoft 365 Admin console.
 
 <p align="center">
-  <img src="/articles/2026/july/azure-bot-services-config-panel.png" alt="Panel de configuración de Azure Bot Services" title="Panel de configuración de Azure Bot Services">
-  <em>Aquí los dos elementos más importantes tienen flechas.</em>
+  <img src="/articles/2026/july/azure-bot-services-config-panel.png" alt="Azure Bot Services configuration panel" title="Azure Bot Services configuration panel">
+  <em>Here the two most important fields have arrows.</em>
 </p>
 
-El campo de URL endpoint es el endpoint del middleware que construirás a continuación.
+The URL endpoint field is the endpoint of the middleware you are going to build next.
 
-La sección de 'prueba web' te permite probar que tu agente y tu middleware de integración efectivamente funcionan y responden correctamente.
+The 'test in webchat' section lets you check that your agent and integration middleware actually work and respond correctly.
 
-## Integración
+## Integration
 
-1. Esto es una versión simplificada de un adaptador que me funciona.
+1. This is a simplified version of an adapter that works for me.
 
 ```python
 import os
@@ -198,12 +198,12 @@ if __name__ == "__main__":
         raise error
 ```
 
-Puedes revisar más implementaciones en el Quickstart de Microsoft [[2]](#ref-2).
-En mi opinión la página está abandonada, así que no asumas que funcionará tal cual.
+You can check more implementations in Microsoft's Quickstart [[2]](#ref-2).
+In my opinion the page is a bit abandoned, so don't assume it will work as-is.
 
 
 
-2. Antes de dar por terminada tu integración no olvides recopilar estas variables correctamente. Son necesarias para desencriptar la comunicación de Azure en el entorno productivo. 
+2. Before wrapping up your integration, do not forget to collect these variables correctly. They are required to decrypt Azure's communication in the production environment.
 
 ```bash
 MicrosoftAppType= SingleTenant
@@ -212,51 +212,51 @@ MicrosoftAppPassword= # client secret
 MicrosoftAppTenantId=
 ```
 
-El client secret solo es necesario para integraciones fuera del ecosistema de Azure. Es preferible usar OAuth2 o un método libre de secretos.
+The client secret is only needed for integrations outside the Azure ecosystem. It is preferable to use OAuth2 or a secret-free method.
 
-### Y también tienes un bonito playground para que pruebes tu agente incluso antes de tenerlo en Microsoft 365
+### And you also get a nice playground to test your agent even before it lands in Microsoft 365
 
-Para que no falle debes dejar vacías las variables que vimos en el paso #2. 
-Si no lo haces el playground no podrá desencriptar las comunicaciones. Y en mi experiencia ha sido complicado debuggear cuando falla.
+For it not to fail, you need to leave the variables from step #2 empty.
+If you don't, the playground won't be able to decrypt the communication. And in my experience, that has been a painful thing to debug when it fails.
 
 <p align="center">
-  <img src="/articles/2026/july/microsoft-365-playground.png" alt="Playground de Microsoft 365" title="Playground de Microsoft 365">
-  <em>Playground de Microsoft 365</em>
+  <img src="/articles/2026/july/microsoft-365-playground.png" alt="Microsoft 365 Playground" title="Microsoft 365 Playground">
+  <em>Microsoft 365 Playground</em>
 </p>
 
 
-## Publicación en Teams
+## Publishing to Teams
 
-### Carga el Archivo Exportado de 365 Toolkit
+### Upload the File Exported from the 365 Toolkit
 
-El proyecto que has configurado previamente genera un bundle. Lo puedes personalizar con el logo que quieres que se muestre.
-Una versión a color y otra simplificada para las sidebars e íconos pequeños.
+The project you configured previously generates a bundle. You can customize it with the logo you want displayed.
+A colored version and a simplified one for sidebars and small icons.
 
 <p align="center">
-  <img src="/articles/2026/july/upload-app-to-teams-request.png" alt="Solicitud de carga de la app a Teams" title="Solicitud de carga de la app a Teams">
-  <em>Carga del bundle exportado desde el Toolkit</em>
+  <img src="/articles/2026/july/upload-app-to-teams-request.png" alt="Uploading the app to Teams request" title="Uploading the app to Teams request">
+  <em>Uploading the bundle exported from the Toolkit</em>
 </p>
 
-### Contacta con Tu Administrador de MS 365
+### Contact Your MS 365 Administrator
 
-Dirígelo a estos enlaces:
-- Centro de administración de Microsoft Teams [[4]](#ref-4)
-- Centro de administración de Microsoft 365 [[5]](#ref-5)
+Point them to these links:
+- Microsoft Teams admin center [[4]](#ref-4)
+- Microsoft 365 admin center [[5]](#ref-5)
 
-No he podido cargarte pantallas de cómo se ve la consola de administrador y exactamente qué pasos debe tomar tu administrador.
-Pero hazle saber que puede crear listas de acceso para la aplicación.
+I have not been able to share screenshots of what the admin console looks like and the exact steps your admin should follow.
+But let them know they can create access lists for the application.
 
-En específico debería tener una lista de acceso para la aplicación dev, que solo está abierta para unos pocos usuarios testers y desarrolladores.
-Y para la aplicación productiva se puede ir planteando una estrategia distinta.
+Specifically, they should have an access list for the dev application, open only to a handful of tester and developer users.
+And for the production application, a different strategy can be worked out.
 
 ## CX!
 
-### ¿Te interesa usar formularios con tu agente?
+### Interested in using forms with your agent?
 
-Las tarjetas adaptativas de toda la vida de Microsoft [[3]](#ref-3). Las puedes usar en tu middleware.
-¿Personalización extra? Es el mismo estándar que Power Automate, con el que podrías estar más familiarizado.
+Microsoft's good old Adaptive Cards [[3]](#ref-3). You can use them in your middleware.
+Extra customization? It's the same standard used by Power Automate, which you might be more familiar with.
 
-### ¿Quieres que ... el ... bot ... escriba? ...
+### Do you want the ... bot ... to type? ...
 
 ```python
 # Typying activity: ...
@@ -266,10 +266,10 @@ response = await self.bot_service.handle_message(text, turn_context)
 await turn_context.send_activity(response)
 ```
 
-Con enviar esa actividad es suficiente en lo que tu motor del agente responde.
+Sending that activity is enough while your agent's engine is working on the response.
 
 ## Extra!
-Esto es lo que pude recopilar de las comunicación que envían los servidores de Azure Bot Services. Te podría ser útil si quieres entender qué tanto puedes obtener de información útil a través del middleware.
+This is what I could gather from the communications sent by the Azure Bot Services servers. It might be useful if you want to understand how much useful information you can get through the middleware.
 
 ```http
 POST /api/messages HTTP/1.1
@@ -331,10 +331,10 @@ Accept-Encoding: gzip
 ```
 
 
-## Referencias
+## References
 
 1. <span id="ref-1"></span>Microsoft. Agents Toolkit fundamentals. Available: [https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals)
 2. <span id="ref-2"></span>Microsoft. Microsoft 365 Agents SDK Quickstart (Python). Available: [https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python](https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python)
 3. <span id="ref-3"></span>Microsoft. Adaptive Cards. Available: [https://adaptivecards.microsoft.com/](https://adaptivecards.microsoft.com/)
-4. <span id="ref-4"></span>Microsoft. Centro de administración de Microsoft Teams. Available: [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com)
-5. <span id="ref-5"></span>Microsoft. Centro de administración de Microsoft 365. Available: [https://admin.microsoft.com](https://admin.microsoft.com)
+4. <span id="ref-4"></span>Microsoft. Microsoft Teams admin center. Available: [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com)
+5. <span id="ref-5"></span>Microsoft. Microsoft 365 admin center. Available: [https://admin.microsoft.com](https://admin.microsoft.com)
