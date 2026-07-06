@@ -12,13 +12,14 @@ head:
       content: agentes, microsoft teams, m365 agents toolkit, azure bot service, sharepoint, rag engine, máquina de estados, chatbots, mesa de ayuda
 ---
 
+# De Idea a Ms Teams: Desplegando un Agente
+
 
 <p align="center">
   <img src="/articles/2026/july/agent-toolkit-dev-flow.png" alt="Flujo de desarrollo del Agents Toolkit" title="Flujo de desarrollo del Agents Toolkit">
   <em>Tomado de <a href="#ref-1">[1]</a></em>
 </p>
 
-# De Idea a Ms Teams: Desplegando un Agente Con el Que Tu Organización Puede Interactuar
 
 A la fecha existe una creciente cantidad de servicios y vías de entrada para desplegar un agente en Ms Teams. Puede ser a través de Copilot, Microsoft 365 o con los servicios de AI Foundry.
 En el fondo todos ellos usan las APIs de Azure Bot Services. 
