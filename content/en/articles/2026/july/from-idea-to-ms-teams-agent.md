@@ -12,7 +12,7 @@ head:
       content: agents, microsoft teams, m365 agents toolkit, azure bot service, sharepoint, rag engine, state machine, chatbots, help desk
 ---
 
-# From Idea to MS Teamsa: Deploying an Agent Your Organization Can Interact With
+# From Idea to MS Teams: Deploying an Agent
 
 <p align="center">
   <img src="/articles/2026/july/agent-toolkit-dev-flow.png" alt="Agents Toolkit development flow" title="Agents Toolkit development flow">
