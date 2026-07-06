@@ -1,0 +1,48 @@
+/* ChiffonStack CTA card — "Trabaja con mi equipo" */
+.chiffon-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.875rem 0.6rem 0.75rem;
+  border-radius: 8px;
+  background: transparent;
+  border: 1.5px solid rgba(0, 0, 0, 0.14);
+  text-decoration: none;
+  color: inherit;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: border-color 0.18s ease, background-color 0.18s ease;
+  margin-top: 0.25rem;
+}
+
+.chiffon-cta:hover {
+  border-color: #1ad6ff;
+  background-color: rgba(26, 214, 255, 0.05);
+}
+
+.chiffon-cta img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.chiffon-cta .cta-arrow {
+  color: #1ad6ff;
+  font-style: normal;
+  line-height: 1;
+  transition: transform 0.18s ease;
+}
+
+.chiffon-cta:hover .cta-arrow {
+  transform: translateX(4px);
+}
+
+/* Dark mode */
+html.dark .chiffon-cta {
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+html.dark .chiffon-cta:hover {
+  border-color: #1ad6ff;
+  background-color: rgba(26, 214, 255, 0.08);
+}
+

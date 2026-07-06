@@ -63,15 +63,12 @@ Articles live at:
 content/<locale>/articles/<year>/<month>/<slug>.md
 ```
 
-Use lowercase, hyphen-separated slugs. Example: `el-antipatro-de-la-red-veloz.md`.
-
-For bilingual articles, the Spanish and English versions MUST use the same slug, and that slug must be in English for URL consistency.
+The Spanish and English versions MUST use the same slug, and that slug must be in English for URL consistency.
 
 Example:
 - `content/es/articles/2026/april/how-i-made-my-fork-bilingual-and-published-it-right.md`
 - `content/en/articles/2026/april/how-i-made-my-fork-bilingual-and-published-it-right.md`
 
-Do not translate the slug between languages.
 ## Workflow
 
 When the user gives you a topic or asks to work on an existing article:
@@ -79,6 +76,10 @@ When the user gives you a topic or asks to work on an existing article:
 1. **If drafting from scratch**: Ask for the main idea, any key points they want to hit, and whether they have images ready. Then draft the frontmatter + body following the style above.
 2. **If editing an existing file**: Read it first, then suggest or apply changes while preserving the author's voice.
 3. **If brainstorming**: Propose 3–5 article angles with a one-line hook each. Let the user pick before writing.
+
+## Citations
+- IEE format citations and references are the end of a page are a must. A serious engineer takes references seriously. 
+- Dont' bother trying to add citations to everything we write. Key points are just fine.
 
 ## Constraints
 

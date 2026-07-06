@@ -22,11 +22,19 @@ You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -pr
 - **Skills**: Reads articles (ES/EN), selects images, writes platform-appropriate copy, outputs JSON post files.
 - **Scope**: Only writes files under `publish/`.
 
+### Article Editor
+- **File**: `.github/agents/article-editor.agent.md`
+- **Invoke**: `@Article Editor`
+- **Purpose**: Line-edit and polish drafts that are already substantively complete — grammar, resolving inline author notes/TODOs, redacting secrets/PII/company-identifying strings, normalizing code blocks and image references.
+- **Skills**: Does not brainstorm or restructure content; only cleans up and redacts. Reports every redaction and resolved note back for the author to validate.
+- **Scope**: Only edits files under `content/` and `public/`.
+
 ## Typical Workflow
 
 1. **Write an article** using `@Article Writer` with a topic or existing draft.
-2. **Generate social posts** using `@Post Writer` with the article path(s).
-3. **Review and publish**:
+2. **Polish the draft** using `@Article Editor` once the content is complete but rough (grammar, redaction, formatting).
+3. **Generate social posts** using `@Post Writer` with the article path(s).
+4. **Review and publish**:
    ```bash
    # Preview without sending
    ./publish/publish.sh publish/linkedin/<slug>.json --dry-run

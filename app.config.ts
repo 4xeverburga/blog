@@ -12,8 +12,8 @@ export default defineAppConfig({
     header: {
       position: 'right', // possible value are : | 'left' | 'center' | 'right'
       logo: {
-        path: '/banner.png', // path of the logo
-        pathDark: '/banner.png', // path of the logo in dark mode, leave this empty if you want to use the same logo
+        path: '/chiffonstack-isotype-negative.svg', // path of the logo
+        pathDark: '/chiffonstack-isotype.svg', // path of the logo in dark mode, leave this empty if you want to use the same logo
         alt: '' // alt of the logo
       }
     },
