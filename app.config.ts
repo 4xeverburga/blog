@@ -14,7 +14,8 @@ export default defineAppConfig({
       logo: {
         path: '/chiffonstack-isotype-negative.svg', // path of the logo
         pathDark: '/chiffonstack-isotype.svg', // path of the logo in dark mode, leave this empty if you want to use the same logo
-        alt: '' // alt of the logo
+        alt: '', // alt of the logo
+        href: 'https://chiffonstack.kekeros.com' // url the logo links to
       }
     },
     footer: {

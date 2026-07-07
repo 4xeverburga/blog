@@ -11,6 +11,12 @@ export default defineNuxtConfig({
     'nuxt-gtag'
   ],
 
+  runtimeConfig: {
+    public: {
+      siteUrl: process.env.SITE_URL || 'https://4verburga.kekeros.com'
+    }
+  },
+
   gtag: {
     id: process.env.GOOGLE_ANALYTICS_ID
   },
