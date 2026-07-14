@@ -6,11 +6,14 @@
 #   ./publish/devto/publish-devto.sh <article.md> --publish         # publish immediately
 #   ./publish/devto/publish-devto.sh <article.md> --tags a,b,c,d     # override auto-derived tags
 #   ./publish/devto/publish-devto.sh <article.md> --dry-run          # preview payload, no request sent
+#   ./publish/devto/publish-devto.sh <article.md> --yes              # skip the confirmation prompt
 #
 # Reads the Nuxt Content markdown file directly (frontmatter + body), converts it into
 # dev.to's own frontmatter flavor (title, published, tags, cover_image, canonical_url,
-# description), expands relative image paths to absolute URLs, and posts it as a draft
-# (or published article) via POST https://dev.to/api/articles.
+# description), expands relative image paths to absolute URLs, and sends it via the Forem
+# API. Looks up any existing dev.to article with the same canonical_url first: if found,
+# it's updated in place (PUT), otherwise a new one is created (POST) — this makes re-runs
+# idempotent and lets --publish promote an existing draft instead of duplicating it.
 #
 # Environment variables (from .env):
 #   DEVTO_API_KEY   (Settings > Extensions > DEV Community API Keys)
@@ -33,6 +36,7 @@ BLOG_BASE_URL="${BLOG_BASE_URL:-https://everburga.dev}"
 API_URL="https://dev.to/api/articles"
 DRY_RUN=false
 PUBLISH=false
+SKIP_CONFIRM=false
 TAGS_OVERRIDE=""
 
 # --- Argument parsing ---
@@ -41,6 +45,7 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --dry-run) DRY_RUN=true; shift ;;
     --publish) PUBLISH=true; shift ;;
+    --yes|-y) SKIP_CONFIRM=true; shift ;;
     --tags) TAGS_OVERRIDE="$2"; shift 2 ;;
     *) ARTICLE_PATH="$1"; shift ;;
   esac
@@ -125,6 +130,19 @@ TAGS_CSV=$(echo "$TAGS_SOURCE" \
 PUBLISHED_VALUE="false"
 [[ "$PUBLISH" == true ]] && PUBLISHED_VALUE="true"
 
+# --- Look up an existing article by canonical_url so re-runs update in place ---
+EXISTING_ID=$(curl -s "https://dev.to/api/articles/me/all?per_page=1000" \
+  -H "api-key: $DEVTO_API_KEY" \
+  | jq -r --arg url "$CANONICAL_URL" '.[] | select(.canonical_url == $url) | .id' | head -n1)
+
+if [[ -n "$EXISTING_ID" ]]; then
+  SEND_METHOD="PUT"
+  SEND_URL="${API_URL}/${EXISTING_ID}"
+else
+  SEND_METHOD="POST"
+  SEND_URL="$API_URL"
+fi
+
 # --- Build dev.to-flavored frontmatter + body ---
 {
   echo "---"
@@ -148,6 +166,7 @@ rm -f "$FULL_MD_FILE"
 echo "========================================"
 echo "DEV.TO ARTICLE PREVIEW"
 echo "========================================"
+echo "Action:        $SEND_METHOD $( [[ -n "$EXISTING_ID" ]] && echo "(existing article #$EXISTING_ID)" || echo "(new article)" )"
 echo "Title:         $TITLE"
 echo "Published:     $PUBLISHED_VALUE"
 echo "Tags:          $TAGS_CSV"
@@ -162,14 +181,16 @@ if [[ "$DRY_RUN" == true ]]; then
   exit 0
 fi
 
-read -rp "Send this article to dev.to? (y/N) " confirm
-if [[ "$confirm" != [yY] ]]; then
-  echo "Aborted."
-  exit 0
+if [[ "$SKIP_CONFIRM" != true ]]; then
+  read -rp "Send this article to dev.to? (y/N) " confirm
+  if [[ "$confirm" != [yY] ]]; then
+    echo "Aborted."
+    exit 0
+  fi
 fi
 
 # --- Send ---
-RESPONSE=$(curl -s -w "\n%{http_code}" -X POST "$API_URL" \
+RESPONSE=$(curl -s -w "\n%{http_code}" -X "$SEND_METHOD" "$SEND_URL" \
   -H "api-key: $DEVTO_API_KEY" \
   -H "Content-Type: application/json" \
   -d "$PAYLOAD")
