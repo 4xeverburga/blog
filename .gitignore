@@ -10,6 +10,7 @@ dist
 sw.*
 .env
 .output
+.data
 
 backlog.txt
 terraform/
