@@ -1,15 +1,15 @@
-import { serverQueryContent } from '#content/server'
+import { queryCollection } from '@nuxt/content/server'
 import { defineEventHandler, setHeader } from 'h3'
 
 const SITE_URL = process.env.SITE_URL || 'https://4verburga.kekeros.com'
 
 export default defineEventHandler(async (event) => {
-  const docs = await serverQueryContent(event).find()
+  const docs = await queryCollection(event, 'content').all()
 
   const urls = docs
-    .filter(doc => doc._path && !doc._path.includes('/__') && !doc._draft)
+    .filter(doc => doc.path && !doc.path.includes('/__'))
     .map((doc) => {
-      const path = doc._path as string
+      const path = doc.path
       const lastmod = (doc.date as string) || new Date().toISOString()
       return `  <url>\n    <loc>${SITE_URL}${path}</loc>\n    <lastmod>${new Date(lastmod).toISOString()}</lastmod>\n  </url>`
     })
