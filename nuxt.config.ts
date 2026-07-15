@@ -33,17 +33,18 @@ export default defineNuxtConfig({
     }
   },
 
-  // Cloudflare's Image Resizing service (`/cdn-cgi/image/...`) requires it to be explicitly
-  // enabled per zone in the Cloudflare dashboard, is typically a paid-plan feature, and does
-  // NOT work at all on `*.pages.dev` preview domains (confirmed: every `/cdn-cgi/image/...`
-  // URL 404s there even though the raw image itself serves fine) — only possibly on a bound
-  // custom domain with the feature turned on. `ipxStatic` (resize once at build time, no
-  // runtime service needed) would be the ideal fit for this now-fully-static site, but it
-  // silently produced zero actual resized files in testing (the underlying `sharp` binary
-  // isn't reliably available in this build environment) — worth revisiting, but shipping
-  // broken images is worse than shipping unoptimized ones. `provider: 'none'` serves the
-  // original file directly with no resizing step at all: bigger downloads, but correct and
-  // guaranteed to work on any host, Cloudflare custom domain or not.
+  // Cloudflare's Image Resizing service (`/cdn-cgi/image/...`) requires "Transformations" to
+  // be explicitly enabled per zone in the Cloudflare dashboard (Images > Transformations) —
+  // it's free (5,000 transformations/month included on the Free plan), just off by default.
+  // It also only works on a zone YOU control, never on `*.pages.dev` preview domains (confirmed:
+  // every `/cdn-cgi/image/...` URL 404s there even though the raw image itself serves fine) —
+  // only the bound custom domain (once Transformations is enabled for that zone) would work.
+  // `ipxStatic` (resize once at build time, no runtime service needed) would be the ideal fit
+  // for this now-fully-static site instead, but it silently produced zero actual resized files
+  // in testing (the underlying `sharp` binary isn't reliably available in this build
+  // environment) — worth revisiting, but shipping broken images is worse than shipping
+  // unoptimized ones. `provider: 'none'` serves the original file directly with no resizing
+  // step at all: bigger downloads, but correct and guaranteed to work on any host.
   image: {
     provider: 'none'
   },
