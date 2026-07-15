@@ -38,7 +38,12 @@ export default defineNuxtConfig({
   // it's free (5,000 transformations/month included on the Free plan), just off by default.
   // It also only works on a zone YOU control, never on `*.pages.dev` preview domains (confirmed:
   // every `/cdn-cgi/image/...` URL 404s there even though the raw image itself serves fine) —
-  // only the bound custom domain (once Transformations is enabled for that zone) would work.
+  // only the bound custom domain works, and only once Transformations is enabled for that zone
+  // (enabled for `4verburga.kekeros.com`, the production custom domain, as of 2026-07-15).
+  // `CF_PAGES_BRANCH` (auto-injected by Cloudflare Pages builds) tells us which branch is being
+  // built: only `main` deploys to that custom domain, so only its build should emit
+  // `/cdn-cgi/image/...` URLs — `dev`'s preview builds only ever get a `*.pages.dev` URL, where
+  // those URLs would 404 regardless of this zone setting.
   // `ipxStatic` (resize once at build time, no runtime service needed) would be the ideal fit
   // for this now-fully-static site instead, but it silently produced zero actual resized files
   // in testing (the underlying `sharp` binary isn't reliably available in this build
@@ -46,7 +51,7 @@ export default defineNuxtConfig({
   // unoptimized ones. `provider: 'none'` serves the original file directly with no resizing
   // step at all: bigger downloads, but correct and guaranteed to work on any host.
   image: {
-    provider: 'none'
+    provider: (process.env.CF_PAGES && process.env.CF_PAGES_BRANCH === 'main') ? 'cloudflare' : 'none'
   },
 
   // `/sitemap.xml` is a custom server route (server/routes/sitemap.xml.ts) that queries
