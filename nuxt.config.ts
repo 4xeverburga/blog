@@ -19,6 +19,20 @@ export default defineNuxtConfig({
     id: process.env.GOOGLE_ANALYTICS_ID
   },
 
+  // @nuxt/content only bundles Shiki grammars for bash/html/mdc/vue/yml/scss/ts/typescript by
+  // default — any other fenced code language in an article (python, http, etc.) silently renders
+  // as plain unhighlighted text (no error, no warning). Add every language actually used in
+  // content/ here.
+  content: {
+    build: {
+      markdown: {
+        highlight: {
+          langs: ['python', 'http', 'markdown']
+        }
+      }
+    }
+  },
+
   // Deployed on Cloudflare Pages: use Cloudflare's Image Resizing service instead of
   // the theme's default `ipx` provider (ipx relies on `sharp`, which doesn't run in the
   // Cloudflare Workers runtime). Other consumers of the theme choose their own provider here.
