@@ -5,6 +5,12 @@ This workspace uses custom agents for blog content creation and social media pub
 ## Extra
 You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -preset slow -acodec aac -b:a 96k output.mp4
 
+## Deployment
+
+- Deployed on **Cloudflare Pages** (project `blog-everb`), auto-deploying from `main` (production) — `dev` pushes also trigger a Cloudflare Pages preview deployment that can be checked independently without touching `main`.
+- Node version is pinned via `.nvmrc` (currently `22.14.0`) and `engines.node` in `package.json`. Cloudflare Pages reads `.nvmrc`/`.node-version`/`engines.node` to pick its build Node version — without it, it silently falls back to an old default (observed: Node 18.17.1), which is incompatible with this project's deps (Nuxt 4, Vite 7/8, etc. all require Node >=20/22).
+- **Lockfile must be regenerated with the same Node/npm version Cloudflare uses** (i.e. whatever `.nvmrc` pins — check with `nvm install $(cat .nvmrc) && nvm use $(cat .nvmrc)` first). Cloudflare Pages runs `npm ci`, which is strict about `package-lock.json` matching `package.json` exactly. A lockfile regenerated with a newer local npm (e.g. npm 11.x bundled with a newer Node than `.nvmrc` specifies) can resolve dependencies slightly differently than Cloudflare's pinned npm version and pass `npm ci` locally while still failing on Cloudflare with "Missing: X from lock file" errors — even though `package.json` and `package-lock.json` look consistent. Always regenerate (`rm -rf node_modules package-lock.json && npm install`) and verify (`rm -rf node_modules && npm ci`) using the exact `.nvmrc`-pinned version before pushing dependency changes.
+
 
 ## Available Agents
 
