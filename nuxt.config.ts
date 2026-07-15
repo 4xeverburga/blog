@@ -22,8 +22,11 @@ export default defineNuxtConfig({
   // Deployed on Cloudflare Pages: use Cloudflare's Image Resizing service instead of
   // the theme's default `ipx` provider (ipx relies on `sharp`, which doesn't run in the
   // Cloudflare Workers runtime). Other consumers of the theme choose their own provider here.
+  // `CF_PAGES` is auto-injected by Cloudflare Pages builds only — locally (and in any other
+  // environment) this stays unset, so `@nuxt/image` falls back to its default `ipx` provider,
+  // which is the only one that actually resolves images outside of Cloudflare's own edge.
   image: {
-    provider: 'cloudflare'
+    provider: process.env.CF_PAGES ? 'cloudflare' : undefined
   },
 
   css: ['~/assets/local.css'],
