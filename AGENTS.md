@@ -2,6 +2,12 @@
 
 This workspace uses custom agents for blog content creation and social media publishing.
 
+## Coding Conventions
+
+- All work happens on `dev`. Changes reach `main` (production) **only via a pull request from `dev`** — never push directly to `main` or open PRs into it from any other branch.
+- `main` is protected by a repo ruleset (`main-protect`): no deletion, no force-push, pull request required to merge.
+- `dev` is protected by a repo ruleset (`dev-protect`): no deletion, no force-push. Pushing new commits directly to `dev` is still allowed — only the branch itself can't be deleted or force-pushed.
+
 ## Extra
 You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -preset slow -acodec aac -b:a 96k output.mp4
 
