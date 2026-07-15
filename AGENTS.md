@@ -44,6 +44,10 @@ You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -pr
 
    # Schedule for later
    ./publish/publish.sh publish/x/<slug>.json --schedule "2026-04-25T15:00:00Z"
+
+   # Cross-post an English article to dev.to as a draft, then review before publishing
+   ./publish/devto/publish-devto.sh content/en/articles/2026/july/<slug>.md --dry-run
+   ./publish/devto/publish-devto.sh content/en/articles/2026/july/<slug>.md
    ```
 
 ## Publishing Infrastructure
@@ -55,6 +59,12 @@ You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -pr
   publish/
   ├── publish.sh          # CLI to send posts via PostPeer
   ├── linkedin/           # LinkedIn post JSONs
-  └── x/                  # X (Twitter) post JSONs
+  ├── x/                  # X (Twitter) post JSONs
+  └── devto/
+      └── publish-devto.sh   # CLI to cross-post an article markdown file to dev.to
   ```
-- Future: `publish/devpost/` for DevPost integration.
+- **dev.to**: Reads a Nuxt Content article file directly (frontmatter + body), rebuilds it with
+  dev.to's own frontmatter (title, tags, cover_image, canonical_url, description), expands
+  relative image paths to `BLOG_BASE_URL`, and posts via the Forem API (`DEVTO_API_KEY`). Creates
+  drafts by default (`published: false`); pass `--publish` to publish immediately. English
+  articles only for now — dev.to's audience is mostly English-speaking.
