@@ -19,7 +19,8 @@
     "@types/node": "^22.0.0",
     "eslint": "^8.57.0",
     "nuxt": "^4.4.8",
-    "nuxt-gtag": "^4.1.0"
+    "nuxt-gtag": "^4.1.0",
+    "nuxt-studio": "^1.7.0"
   },
   "dependencies": {
     "@iconify-json/material-symbols": "^1.2.84",
