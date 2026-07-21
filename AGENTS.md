@@ -8,6 +8,57 @@ This workspace uses custom agents for blog content creation and social media pub
 - `main` is protected by a repo ruleset (`main-protect`): no deletion, no force-push, pull request required to merge.
 - `dev` is protected by a repo ruleset (`dev-protect`): no deletion, no force-push. Pushing new commits directly to `dev` is still allowed — only the branch itself can't be deleted or force-pushed.
 
+## Cover Images
+
+`image.provider` is `'none'` in dev and on non-`main` (preview) branch builds (see `nuxt.config.ts`)
+— the raw file is served to the browser with **no server-side resizing/re-encoding**. This means
+the *browser itself* must do any downscale to fit the small article-card thumbnail (~300-450px
+CSS wide). Confirmed by direct testing (Playwright + `naturalWidth`/`naturalHeight` inspection):
+shipping a cover at a much larger resolution than the actual display size (e.g. 2000px wide for a
+~430px-wide card) still looks noticeably blurry/aliased on thin diagram lines and small text, even
+though the same downscale ratio done offline with `Image.LANCZOS` (Pillow) looks clearly crisper.
+The browser's live/real-time image scaling (further confused by `<NuxtImg>` emitting a `srcset`
+with the *same* URL for both `1x` and `2x` — since there's no real resize pipeline to generate an
+actual 2x variant — which makes the browser treat the resource as density-adjusted) is simply not
+as good as a proper offline resample for this kind of content. **The fix is to pre-resample close
+to the real final display size** (not just "high enough resolution"), not to ship something huge
+and rely on the browser to shrink it well — bigger source resolution does NOT mean a crisper
+result once something else does the final scale.
+
+For any cover sourced from a dense diagram/screenshot, generate **two files**, and do each resize
+into a **new** output filename — never overwrite the higher-resolution source in place, since a
+later step may still need it (there is no way to regenerate a bigger version from a smaller one):
+
+- `<slug>-cover.webp`: padded to the site's standard cover ratio (10:7), resampled with
+  `Image.LANCZOS` down close to the real rendered card size (~1200x840 has worked well — much
+  closer to the ~300-450px CSS display width than the source, even accounting for retina/2x and
+  the featured card being larger than grid cards). Used for article list cards and `og:image`.
+- `<slug>-hero.webp`: the diagram at its natural (unpadded) aspect ratio, for embedding directly
+  in the article body as a banner image. Crop the white padding back off the cover version (or
+  re-derive from the original source if still available) rather than stretching/upscaling. Article
+  body content width is capped at `68ch` (`tokens.config.ts`'s `readableLine`, ~700px), so ~2000px
+  wide gives comfortable retina headroom without needing the same aggressive resize as the cover.
+
+**Keep the original source file around** (don't delete it after generating the two variants) —
+both `cover.webp` and `hero.webp` should each be derived directly from the pristine source in a
+single pass, never chained from one already-lossy-compressed derivative to another (each
+generation of lossy webp re-encoding compounds visible artifacts, especially ringing/haloing
+around thin text). If the source is ever deleted and only a derivative remains, regenerating a
+"hero" from it is NOT the same as the original and must be clearly flagged as such.
+
+**If a genuine vector SVG export of the diagram is available, prefer it over raster entirely** —
+it sidesteps every problem above (no downscale blur, no compression artifacts, crisp at any size,
+even after the card's `object-fit: cover` 16:9 crop). Confirmed working directly as `cover`/`hero`
+image `src` values, including CSS `@keyframes` animations embedded in the SVG (these still
+animate when the SVG is loaded via a plain `<img>` tag, unlike scripted/interactive SVG content).
+Verify it's real vector output first (`grep -c '<image' file.svg` — some raster-in-name-only
+exports just wrap a base64 PNG in an `<image>` tag, which gains nothing). One caveat: most social
+crawlers (Facebook/X/LinkedIn/Slack unfurls) don't render SVG for `og:image` previews, so using an
+SVG as `cover` (which feeds both the on-page card AND `og:image` from the same frontmatter field)
+means link previews on those platforms will likely show no image — acceptable trade-off if inline
+appearance matters more than social unfurl previews, but worth a dedicated `ogImage` field later
+if that becomes a problem.
+
 ## Extra
 You can compress mov videos with ffmpeg -i input.mov -vcodec libx264 -crf 28 -preset slow -acodec aac -b:a 96k output.mp4
 
