@@ -13,7 +13,7 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@4xeverburga/alpine-spanishplus": "3.2.1-dev.1fe42ae",
+    "@4xeverburga/alpine-spanishplus": "3.2.1-dev.cb679bc",
     "@nuxt/devtools": "^1.0.8",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/node": "^22.0.0",
