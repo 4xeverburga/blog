@@ -1,11 +1,12 @@
 ---
-layout: article
-cover: /articles/2026/april/el_blog_renace.png
+title: Cómo volví mi fork multilenguaje y lo publiqué bien
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
-description: Este post marca el renacer de mi blog
+cover: /articles/2026/april/el_blog_renace.png
 date: 2026-04-13T10:00:00.000Z
+description: Este post marca el renacer de mi blog
+layout: article
 head:
   meta:
     - name: keywords
@@ -14,7 +15,7 @@ head:
 
 # Cómo volví mi fork multilenguaje y lo publiqué bien
 
-Este post marca el renacer de mi blog. No porque ahora tenga ideas a desbordar que contar al mundo; simplemente porque por fin volví a tocarlo en serio. 
+Este post marca el renacer de mi blog. No porque ahora tenga ideas a desbordar que contar al mundo; simplemente porque por fin volví a tocarlo en serio.
 Recuerdo ver una publicación sobre el creador de OpenClaw: decenas de repos, el primer viral fue OpenClaw.
 
 Es como la vida, pensé. De muchos tiros alguno da en el blanco. Así que seguimos.
@@ -22,14 +23,14 @@ Es como la vida, pensé. De muchos tiros alguno da en el blanco. Así que seguim
 Ahora que he vuelto y ha salido Claude 4.6 y demás, todo es muy incierto. Mis propias correcciones que ahora te comparto fueron contribuidas en su mayor parte por Claude. No sé cuánto crédito debería tomar. Si por curiosidad sigues leyendo y te interesa cómo publicar a node, te dejo aquí abajo mi brief:
 
 ## Índice
+
 1. [Lo que sí trabajé](#lo-que-si-trabaje)
 2. [Las líneas que de verdad importan](#las-lineas-que-de-verdad-importan)
 3. [Repo](#repo)
 
-
 ## Lo que sí trabajé
 
-Miré el historial de mi rama y, para ser honesto, me di cuenta de que hubo un error en el que tuve que ser el human in the loop y cambiar el scope de mi cuenta de npmjs creando una organización. 
+Miré el historial de mi rama y, para ser honesto, me di cuenta de que hubo un error en el que tuve que ser el human in the loop y cambiar el scope de mi cuenta de npmjs creando una organización.
 
 Lo que pasa es que debes tener el mismo handle en github y en npmjs (o en una org). Ese detalle te lo comparto.
 
@@ -86,11 +87,7 @@ jobs:
 - GitHub Packages queda sincronizado
 - el publish solo corre si CI pasó antes
 
-
-<p align="center">
-  <img src="/articles/2026/april/trusted_publisher_npmjs.png" alt="Configuración de trusted publisher en npmjs" title="Trusted publisher conectado con GitHub Actions">
-  <em>No olvidar tener el mismo handle, así tienes tu publicación bonita sincronizada en Github</em>
-</p>
+![Configuración de trusted publisher en npmjs](/articles/2026/april/trusted_publisher_npmjs.png "Trusted publisher conectado con GitHub Actions")*No olvidar tener el mismo handle, así tienes tu publicación bonita sincronizada en Github*
 
 ## Repo
 
@@ -98,4 +95,3 @@ Estas son las fuentes.
 
 - repo: [4xeverburga/nuxt-alpine-spanishplus](https://github.com/4xeverburga/nuxt-alpine-spanishplus)
 - workflows: [`.github/workflows`](https://github.com/4xeverburga/nuxt-alpine-spanishplus/tree/main/.github/workflows)
-
