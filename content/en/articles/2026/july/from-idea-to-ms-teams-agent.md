@@ -1,11 +1,12 @@
 ---
-layout: article
-cover: /articles/2026/july/ms-teams-agent-architecture.jpg
+title: "From Idea to MS Teams: Deploying an Agent"
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
-description: An agent that shows a thinking animation, image uploads and more! ...
+cover: /articles/2026/july/ms-teams-agent-architecture.jpg
 date: 2026-07-07T10:00:00.000Z
+description: An agent that shows a thinking animation, image uploads and more! ...
+layout: article
 head:
   meta:
     - name: keywords
@@ -14,10 +15,8 @@ head:
 
 # From Idea to MS Teams: Deploying an Agent
 
-<p align="center">
-  <img src="/articles/2026/july/agent-toolkit-dev-flow.png" alt="Agents Toolkit development flow" title="Agents Toolkit development flow">
-  <em>Taken from <a href="#ref-1">[1]</a></em>
-</p>
+![Agents Toolkit development flow](/articles/2026/july/agent-toolkit-dev-flow.png "Agents Toolkit development flow")
+*Taken from [\[1\]](#ref-1)*
 
 There is a growing number of services and entry points to deploy an agent in MS Teams these days. It can be through Copilot, Microsoft 365, or the AI Foundry services.
 Under the hood, all of them use the Azure Bot Services APIs.
@@ -26,13 +25,14 @@ If you want maximum customization, you will like this tutorial.
 
 ## Prerequisites
 
-If you struggle to get your Azure admin to grant permissions documented in some random blog article, this Microsoft post follows steps similar to this one [[1]](#ref-1).
+If you struggle to get your Azure admin to grant permissions documented in some random blog article, this Microsoft post follows steps similar to this one [\[1\]](#ref-1).
 
 - Application Developer role in the Azure subscription where your project will be assigned.
 - A corporate MS Teams license. As an alternative, there is a Microsoft 365 Dev trial program you can try, but it only lasts 90 days and you still need an active Azure subscription anyway.
-It ends up redundant to do all the work there instead of isolating a group of users in your organization's 365 admin console.
+  It ends up redundant to do all the work there instead of isolating a group of users in your organization's 365 admin console.
 
 ## Contents
+
 What this tutorial covers:
 
 - Creating the App in Azure Entra ID. This is where permissions are managed, and it is the visible face of your Agent for everyone in the same Microsoft tenant.
@@ -43,39 +43,29 @@ What this tutorial covers:
 
 We are not going to look at the agent's own logic. What you care about, like I did back then, is how to deploy it into your corporate suite.
 
-
 ## Entra ID
 
 Azure can be a nightmare sometimes. Let's go step by step.
 
 First, create an app with a name and a 'dev' or 'prd' suffix. You will need this distinction later to segregate users.
 
-<p align="center">
-  <img src="/articles/2026/july/entra-id-tuto.png" alt="Open the Entra ID service" title="Open the service">
-  <em>Open the service</em>
-</p>
+![Open the Entra ID service](/articles/2026/july/entra-id-tuto.png "Open the service")
+*Open the service*
 
-<p align="center">
-  <img src="/articles/2026/july/app-registration-add-new.png" alt="Registering a new app" title="Click create">
-  <em>Click create. Single tenant is enough for most use cases.</em>
-</p>
+![Registering a new app](/articles/2026/july/app-registration-add-new.png "Click create")
+*Click create. Single tenant is enough for most use cases.*
 
-<p align="center">
-  <img src="/articles/2026/july/app-registration-panel.png" alt="App registration panel" title="Note down the App Id">
-  <em>Note down the App Id.</em>
-</p>
+![App registration panel](/articles/2026/july/app-registration-panel.png "Note down the App Id")
+*Note down the App Id.*
 
 If you need your agent to interact with Microsoft services, the API Permissions section will be your friend. In case your Agent is not part of the Azure ecosystem, a quick fix is to create a certificate in the Certificates and Secrets section. In that case, note down the Secret you generate.
-
 
 ## Azure Bot Services
 
 Create a Bot with the same App Id you used for Entra ID. I am not sure of the reason behind this, but when I used the automatically generated Id there were issues with the bot showing up in the Microsoft 365 Admin console.
 
-<p align="center">
-  <img src="/articles/2026/july/azure-bot-services-config-panel.png" alt="Azure Bot Services configuration panel" title="Azure Bot Services configuration panel">
-  <em>Here the two most important fields have arrows.</em>
-</p>
+![Azure Bot Services configuration panel](/articles/2026/july/azure-bot-services-config-panel.png "Azure Bot Services configuration panel")
+*Here the two most important fields have arrows.*
 
 The URL endpoint field is the endpoint of the middleware you are going to build next.
 
@@ -197,10 +187,8 @@ if __name__ == "__main__":
         raise error
 ```
 
-You can check more implementations in Microsoft's Quickstart [[2]](#ref-2).
+You can check more implementations in Microsoft's Quickstart [\[2\]](#ref-2).
 In my opinion the page is a bit abandoned, so don't assume it will work as-is.
-
-
 
 2. Before wrapping up your integration, do not forget to collect these variables correctly. They are required to decrypt Azure's communication in the production environment.
 
@@ -218,11 +206,8 @@ The client secret is only needed for integrations outside the Azure ecosystem. I
 For it not to fail, you need to leave the variables from step #2 empty.
 If you don't, the playground won't be able to decrypt the communication. And in my experience, that has been a painful thing to debug when it fails.
 
-<p align="center">
-  <img src="/articles/2026/july/microsoft-365-playground.png" alt="Microsoft 365 Playground" title="Microsoft 365 Playground">
-  <em>Microsoft 365 Playground</em>
-</p>
-
+![Microsoft 365 Playground](/articles/2026/july/microsoft-365-playground.png "Microsoft 365 Playground")
+*Microsoft 365 Playground*
 
 ## Publishing to Teams
 
@@ -231,16 +216,15 @@ If you don't, the playground won't be able to decrypt the communication. And in 
 The project you configured previously generates a bundle. You can customize it with the logo you want displayed.
 A colored version and a simplified one for sidebars and small icons.
 
-<p align="center">
-  <img src="/articles/2026/july/upload-app-to-teams-request.png" alt="Uploading the app to Teams request" title="Uploading the app to Teams request">
-  <em>Uploading the bundle exported from the Toolkit</em>
-</p>
+![Uploading the app to Teams request](/articles/2026/july/upload-app-to-teams-request.png "Uploading the app to Teams request")
+*Uploading the bundle exported from the Toolkit*
 
 ### Contact Your MS 365 Administrator
 
 Point them to these links:
-- Microsoft Teams admin center [[4]](#ref-4)
-- Microsoft 365 admin center [[5]](#ref-5)
+
+- Microsoft Teams admin center [\[4\]](#ref-4)
+- Microsoft 365 admin center [\[5\]](#ref-5)
 
 I have not been able to share screenshots of what the admin console looks like and the exact steps your admin should follow.
 But let them know they can create access lists for the application.
@@ -252,7 +236,7 @@ And for the production application, a different strategy can be worked out.
 
 ### Interested in using forms with your agent?
 
-Microsoft's good old Adaptive Cards [[3]](#ref-3). You can use them in your middleware.
+Microsoft's good old Adaptive Cards [\[3\]](#ref-3). You can use them in your middleware.
 Extra customization? It's the same standard used by Power Automate, which you might be more familiar with.
 
 ### Do you want the ... bot ... to type? ...
@@ -268,6 +252,7 @@ await turn_context.send_activity(response)
 Sending that activity is enough while your agent's engine is working on the response.
 
 ## Extra!
+
 This is what I could gather from the communications sent by the Azure Bot Services servers. It might be useful if you want to understand how much useful information you can get through the middleware.
 
 ```http
@@ -329,11 +314,10 @@ Accept-Encoding: gzip
 {"type":"message","id":"<REDACTED_CONVERSATION_ID>|<REDACTED_ACTIVITY_ID>","timestamp":"2026-03-02T17:44:42.8691754Z","localTimestamp":"2026-03-02T12:44:42.728-05:00","localTimezone":"America/Lima","serviceUrl":"https://webchat.botframework.com/","channelId":"webchat","from":{"id":"00000000-0000-0000-0000-000000000000","name":""},"conversation":{"id":"<REDACTED_CONVERSATION_ID>"},"recipient":{"id":"agente-msteams@<REDACTED_TOKEN>","name":"agente-msteams"},"textFormat":"plain","locale":"en-US","text":"Hola","attachments":[],"channelData":{"attachmentSizes":[],"clientActivityID":"<REDACTED_CLIENT_ACTIVITY_ID>"}}
 ```
 
-
 ## References
 
-1. <span id="ref-1"></span>Microsoft. Agents Toolkit fundamentals. Available: [https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals](https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals)
-2. <span id="ref-2"></span>Microsoft. Microsoft 365 Agents SDK Quickstart (Python). Available: [https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python](https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python)
-3. <span id="ref-3"></span>Microsoft. Adaptive Cards. Available: [https://adaptivecards.microsoft.com/](https://adaptivecards.microsoft.com/)
-4. <span id="ref-4"></span>Microsoft. Microsoft Teams admin center. Available: [https://admin.teams.microsoft.com](https://admin.teams.microsoft.com)
-5. <span id="ref-5"></span>Microsoft. Microsoft 365 admin center. Available: [https://admin.microsoft.com](https://admin.microsoft.com)
+1. []{#ref-1}Microsoft. Agents Toolkit fundamentals. Available: <https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals>
+2. []{#ref-2}Microsoft. Microsoft 365 Agents SDK Quickstart (Python). Available: <https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python>
+3. []{#ref-3}Microsoft. Adaptive Cards. Available: <https://adaptivecards.microsoft.com/>
+4. []{#ref-4}Microsoft. Microsoft Teams admin center. Available: <https://admin.teams.microsoft.com>
+5. []{#ref-5}Microsoft. Microsoft 365 admin center. Available: <https://admin.microsoft.com>

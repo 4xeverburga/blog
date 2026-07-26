@@ -6,7 +6,14 @@ export default defineNuxtConfig({
     // https://github.com/nuxt/devtools
     '@nuxt/devtools',
     // https://github.com/johannschopplich/nuxt-gtag
-    'nuxt-gtag'
+    'nuxt-gtag',
+    // https://nuxt.studio - visual editor for @nuxt/content. Dev-only: the module's
+    // production mode needs a server-side auth route (`/_studio`), which conflicts with
+    // this site's fully static Cloudflare deploy (`cloudflare_pages_static`, no worker/D1 —
+    // see the comments on the `nitro` option below). Restrict it to `nuxi dev` so it never
+    // ships in a real build; edit content locally with the floating Studio button, then
+    // commit/push as usual.
+    ...(process.env.NODE_ENV !== 'production' ? ['nuxt-studio'] : [])
   ],
 
   runtimeConfig: {
@@ -76,6 +83,41 @@ export default defineNuxtConfig({
     prerender: {
       routes: ['/sitemap.xml']
     }
+  },
+
+  // DEV-ONLY WORKAROUND: `@nuxt-themes/tokens` (a transitive dep pulled in by the theme, via
+  // pinceau) generates a merged `.nuxt/pinceau/utils.ts` whose source correctly declares
+  // `import type { PinceauTheme, PropertyValue } from 'pinceau'`, but pinceau's own codegen
+  // re-emits that import WITHOUT the `type` keyword when it serializes the merged utils file —
+  // even though neither name is used as a runtime value anywhere in the generated body (only in
+  // now-erased type annotations). The browser then fails to import them as real named exports:
+  // "The requested module '.../pinceau/dist/index.mjs' does not provide an export named
+  // 'PinceauTheme'". Per ES module spec, a throwing module evaluation aborts evaluation of every
+  // later-declared sibling static import in the same graph — since this utils.ts sits earlier in
+  // the client plugin graph than plugins registered late (e.g. `nuxt-studio`), that error was
+  // silently preventing nuxt-studio's plugin from ever running at all (no console error, just a
+  // missing floating button). Confirmed dev-only: production builds already succeed today (this
+  // is a browser ESM-ordering issue, not a build-time one), so this only patches `serve`/`dev`.
+  // Do NOT touch the theme's or pinceau's actual dependency versions to fix this — a past
+  // attempt to change theme-adjacent dependencies broke Pinceau's CSS pipeline silently
+  // sitewide with zero errors (see repo memory), so any real upstream fix belongs in the theme
+  // repo, reviewed on its own.
+  vite: {
+    plugins: [
+      {
+        name: 'meblog:fix-pinceau-utils-type-only-import',
+        enforce: 'pre',
+        transform (code, id) {
+          if (!id.endsWith('pinceau/utils.ts')) return
+          const fixed = code.replace(
+            /import\s*\{\s*PinceauTheme\s*,\s*PropertyValue\s*\}\s*from\s*(['"])pinceau\1/,
+            "import {} from $1pinceau$1"
+          )
+          if (fixed === code) return
+          return { code: fixed, map: null }
+        }
+      }
+    ]
   },
 
   css: ['~/assets/local.css'],
