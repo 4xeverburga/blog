@@ -96,6 +96,76 @@ Las excepciones menores o tecnologías mal categorizadas las voy agregando manua
 
 Una vez que ya tienes los conjuntos de datos normalizados el ranking se vuelve una tarea de estadística, y la página de reportes un proceso de diseño y UI.
 
+### Cómo reproducir tu `severity` y tu `score` con la API pública de CrUX
+
+theuxreport no inventa ningún número: todo lo que muestra sobre tus Core Web Vitals sale directo de la [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) de Google — los mismos datos reales de usuarios de Chrome que usa PageSpeed Insights. Puedes pedirle esos mismos datos a Google con tu propia API key y llegar exactamente al mismo `severity`/`score` que ves en tu reporte. Esta es la fórmula, paso a paso.
+
+#### 1. Pide tu propio histograma a CrUX
+
+```bash
+curl --request POST \
+  'https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=TU_API_KEY' \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data '{"origin":"https://tu-dominio.pe"}'
+```
+
+(API key gratuita, se pide en Google Cloud Console habilitando "Chrome UX Report API".)
+
+La respuesta trae, por cada métrica, un `histogram` de 3 bins — bueno / necesita mejora / malo — cada uno con una `density` (fracción real de visitas de usuarios reales en ese rango, no un promedio sintético):
+
+```json
+"largest_contentful_paint": {
+  "histogram": [
+    { "start": 0,    "end": 2500, "density": 0.82 },
+    { "start": 2500, "end": 4000, "density": 0.11 },
+    { "start": 4000,               "density": 0.07 }
+  ],
+  "percentiles": { "p75": 2380 }
+}
+```
+
+Las tres métricas que importan son `largest_contentful_paint` (LCP), `cumulative_layout_shift` (CLS) e `interaction_to_next_paint` (INP) — los tres Core Web Vitals oficiales de Google.
+
+#### 2. Calcula el severity de cada métrica
+
+Por cada métrica, el severity NO es "cuál banda es mayoría" — es un promedio ponderado por la densidad real de cada banda:
+
+```
+severity_métrica = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
+```
+
+Con el ejemplo de arriba: 0.07 × 1.0 + 0.11 × 0.5 + 0.82 × 0.0 = 0.125.
+
+¿Por qué ponderado y no "banda dominante"? Porque un origen con 51% good / 49% needs-improvement y otro con 99% good / 1% needs-improvement son historias reales muy distintas — colapsarlos al mismo valor discreto borra la variación que sí existe entre sitios.
+
+#### 3. Promedia las tres métricas
+
+```python
+def metric_severity(good: float, ni: float, poor: float) -> float:
+    return poor * 1.0 + ni * 0.5 + good * 0.0
+
+severity = (
+    metric_severity(*lcp_densities)
+    + metric_severity(*cls_densities)
+    + metric_severity(*inp_densities)
+) / 3
+```
+
+`severity` queda entre 0 (perfecto) y 1 (el peor caso posible). Si a tu origen le falta alguna de las tres métricas en esta ventana (CrUX exige un mínimo de tráfico por métrica para publicarla), simplemente promedia las que sí tengas — mi versión productiva imputa la métrica faltante con el promedio del cohorte peruano de esa ventana en vez de ignorarla (para no premiar artificialmente a un origen con datos incompletos), pero esa parte sí depende del cohorte.
+
+#### 4. Tu score
+
+```python
+score = round((1 - severity) * 100)
+```
+
+Con `severity = 0.125`, el score es **87** — la misma cifra que verías en tu reporte. Este número es 100% reproducible por cualquiera con solo la API pública de Google: no hay ingrediente secreto.
+
+#### Lo que sí necesita el cohorte (y por eso no lo puedes calcular solo)
+
+El **percentil** ("mejor que el X% de los .pe") es distinto del score: no es una fórmula sobre tu propio histograma, es tu posición relativa a los ~20 mil orígenes `.pe` reales que theuxreport midió con el mismo método. Google no te da esa lista — es el trabajo real de recolección de theuxreport, no un secreto algorítmico. Esa es la diferencia entre "tu número" (reproducible por cualquiera, hoy mismo, con una API key gratis) y "tu posición" (que exige haber medido el país entero con la misma vara).
+
 Espero que te haya gustado el artículo. Recuerda que cada mes actualizo el reporte de páginas. Te veo en mis métricas de analytics pronto!
 
 ## Colaboración
