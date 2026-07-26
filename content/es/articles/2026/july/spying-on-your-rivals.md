@@ -100,7 +100,7 @@ Una vez que ya tienes los conjuntos de datos normalizados el ranking se vuelve u
 
 Si te interesa validar los resultados que ves en la web o alguna publicación, estos son los pasos.
 
-### Cómo reproducir tu `severity` y tu `score` con la API pública de CrUX
+### Cómo reproducir tu **severity** y tu **score** con la API pública de CrUX
 
  Lo que se muestra en la sección Core Web Vitals sale directo de la [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) de Google y que se usan en su ranking de SEO. 
 
@@ -114,7 +114,7 @@ curl --request POST \
   --data '{"origin":"https://tu-dominio.pe"}'
 ```
 
-La respuesta trae, por cada métrica, un `histogram` de 3 bins: bueno / necesita mejora / malo — cada uno con una `density` (fracción real de visitas de usuarios reales en ese rango, no un promedio sintético):
+La respuesta trae, por cada métrica, un **histogram** de 3 bins: bueno / necesita mejora / malo — cada uno con una **density** (fracción real de visitas de usuarios reales en ese rango, no un promedio sintético):
 
 ```json
 "largest_contentful_paint": {
@@ -127,7 +127,7 @@ La respuesta trae, por cada métrica, un `histogram` de 3 bins: bueno / necesita
 }
 ```
 
-Las tres métricas que importan son `largest_contentful_paint` (LCP), `cumulative_layout_shift` (CLS) e `interaction_to_next_paint` (INP). Los core web vitals oficiales de Google.
+Las tres métricas que importan son **largest_contentful_paint** (LCP), **cumulative_layout_shift** (CLS) e **interaction_to_next_paint** (INP). Los core web vitals oficiales de Google.
 
 #### 2. Calcula el severity de cada métrica
 
@@ -154,7 +154,7 @@ severity = (
 ) / 3
 ```
 
-`severity` queda entre 0 (perfecto) y 1 (el peor caso posible). Si a tu origen le falta alguna de las tres métricas en esta ventana (CrUX exige un mínimo de tráfico por métrica para publicarla) lo que hago es completar el dato con el promedio del cohorte de esa ventana de datos. En ese caso sí tendrías problemas para reproducir tu score completo, pero puedes usar un valor placeholder de 50% para llegar a un aproximado.
+**severity** queda entre 0 (perfecto) y 1 (el peor caso posible). Si a tu origen le falta alguna de las tres métricas en esta ventana (CrUX exige un mínimo de tráfico por métrica para publicarla) lo que hago es completar el dato con el promedio del cohorte de esa ventana de datos. En ese caso sí tendrías problemas para reproducir tu score completo, pero puedes usar un valor placeholder de 50% para llegar a un aproximado.
 
 #### 4. Tu score
 
@@ -162,7 +162,7 @@ severity = (
 score = round((1 - severity) * 100)
 ```
 
-Con `severity = 0.125`, el score es **87/100**. Este número es 100% reproducible por cualquiera con solo la API pública de Google.
+Con **severity = 0.125**, el score es **87/100**. Este número es 100% reproducible por cualquiera con solo la API pública de Google.
 
 Espero que te haya gustado el artículo. Recuerda que cada mes actualizo el reporte de páginas. Te veo en mis métricas de analytics pronto!
 
