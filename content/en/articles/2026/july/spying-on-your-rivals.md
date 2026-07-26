@@ -96,11 +96,15 @@ Minor exceptions or mis-categorized technologies I add manually to a structure o
 
 Once you have the normalized datasets, ranking becomes a statistics task, and the reports page becomes a design and UI process.
 
+## The UX Report
+
+If you're interested in validating the results you see on the site or in a post, here are the steps.
+
 ### How to reproduce your `severity` and your `score` with the public CrUX API
 
-theuxreport doesn't make up any number: everything it shows about your Core Web Vitals comes straight from Google's [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) — the same real Chrome user data that PageSpeed Insights uses. You can request that same data from Google with your own API key and land on the exact same `severity`/`score` you see in your report. Here's the formula, step by step.
+ What shows up in the Core Web Vitals section comes straight from Google's [Chrome UX Report API](https://developer.chrome.com/docs/crux/api), which is also used in their SEO ranking.
 
-#### 1. Request your own histogram from CrUX
+#### 1. Request a histogram through the CrUX API
 
 ```bash
 curl --request POST \
@@ -110,9 +114,7 @@ curl --request POST \
   --data '{"origin":"https://your-domain.pe"}'
 ```
 
-(Free API key, requested in Google Cloud Console by enabling "Chrome UX Report API".)
-
-The response includes, for each metric, a 3-bin `histogram` — good / needs improvement / poor — each with a `density` (the real fraction of real-user visits in that range, not a synthetic average):
+The response includes, for each metric, a 3-bin `histogram`: good / needs improvement / poor — each with a `density` (the real fraction of real-user visits in that range, not a synthetic average):
 
 ```json
 "largest_contentful_paint": {
@@ -125,11 +127,11 @@ The response includes, for each metric, a 3-bin `histogram` — good / needs imp
 }
 ```
 
-The three metrics that matter are `largest_contentful_paint` (LCP), `cumulative_layout_shift` (CLS), and `interaction_to_next_paint` (INP) — Google's three official Core Web Vitals.
+The three metrics that matter are `largest_contentful_paint` (LCP), `cumulative_layout_shift` (CLS), and `interaction_to_next_paint` (INP). Google's official core web vitals.
 
 #### 2. Calculate the severity of each metric
 
-For each metric, severity is NOT "which band is the majority" — it's an average weighted by the real density of each band:
+For each metric, severity is an average weighted by the real density of each band:
 
 ```
 metric_severity = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
@@ -137,7 +139,7 @@ metric_severity = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
 
 With the example above: 0.07 × 1.0 + 0.11 × 0.5 + 0.82 × 0.0 = 0.125.
 
-Why weighted instead of "dominant band"? Because an origin with 51% good / 49% needs-improvement and another with 99% good / 1% needs-improvement are very different real stories — collapsing them to the same discrete value erases the variation that genuinely exists between sites.
+Why weighted instead of "dominant band"? Because an origin with 51% good / 49% needs-improvement and another with 99% good / 1% needs-improvement are very different real stories
 
 #### 3. Average the three metrics
 
@@ -152,7 +154,7 @@ severity = (
 ) / 3
 ```
 
-`severity` ends up between 0 (perfect) and 1 (the worst possible case). If your origin is missing one of the three metrics for this window (CrUX requires a minimum amount of traffic per metric before it publishes it), you simply average whichever ones you do have — my production version imputes the missing metric with that window's Peruvian cohort average instead of ignoring it (so an origin with incomplete data isn't artificially rewarded), but that part does depend on the cohort.
+`severity` ends up between 0 (perfect) and 1 (the worst possible case). If your origin is missing one of the three metrics for this window (CrUX requires a minimum amount of traffic per metric before it publishes it), what I do is fill in the value with that window's cohort average. In that case you'd have trouble reproducing your full score, but you can use a placeholder value of 50% to get an approximation.
 
 #### 4. Your score
 
@@ -160,11 +162,7 @@ severity = (
 score = round((1 - severity) * 100)
 ```
 
-With `severity = 0.125`, the score is **87** — the same figure you'd see in your report. This number is 100% reproducible by anyone with nothing but Google's public API: there's no secret ingredient.
-
-#### What actually needs the cohort (and why you can't calculate it alone)
-
-The **percentile** ("better than X% of .pe sites") is different from the score: it's not a formula over your own histogram, it's your position relative to the ~20 thousand real `.pe` origins theuxreport measured with the same method. Google doesn't hand you that list — it's theuxreport's real collection work, not an algorithmic secret. That's the difference between "your number" (reproducible by anyone, today, with a free API key) and "your position" (which requires having measured the whole country with the same yardstick).
+With `severity = 0.125`, the score is **87/100**. This number is 100% reproducible by anyone with nothing but Google's public API.
 
 I hope you enjoyed the article. Remember I update the site report every month. See you in my analytics metrics soon!
 
