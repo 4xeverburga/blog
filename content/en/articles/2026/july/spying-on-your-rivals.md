@@ -96,6 +96,76 @@ Minor exceptions or mis-categorized technologies I add manually to a structure o
 
 Once you have the normalized datasets, ranking becomes a statistics task, and the reports page becomes a design and UI process.
 
+### How to reproduce your `severity` and your `score` with the public CrUX API
+
+theuxreport doesn't make up any number: everything it shows about your Core Web Vitals comes straight from Google's [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) — the same real Chrome user data that PageSpeed Insights uses. You can request that same data from Google with your own API key and land on the exact same `severity`/`score` you see in your report. Here's the formula, step by step.
+
+#### 1. Request your own histogram from CrUX
+
+```bash
+curl --request POST \
+  'https://chromeuxreport.googleapis.com/v1/records:queryRecord?key=YOUR_API_KEY' \
+  --header 'Accept: application/json' \
+  --header 'Content-Type: application/json' \
+  --data '{"origin":"https://your-domain.pe"}'
+```
+
+(Free API key, requested in Google Cloud Console by enabling "Chrome UX Report API".)
+
+The response includes, for each metric, a 3-bin `histogram` — good / needs improvement / poor — each with a `density` (the real fraction of real-user visits in that range, not a synthetic average):
+
+```json
+"largest_contentful_paint": {
+  "histogram": [
+    { "start": 0,    "end": 2500, "density": 0.82 },
+    { "start": 2500, "end": 4000, "density": 0.11 },
+    { "start": 4000,               "density": 0.07 }
+  ],
+  "percentiles": { "p75": 2380 }
+}
+```
+
+The three metrics that matter are `largest_contentful_paint` (LCP), `cumulative_layout_shift` (CLS), and `interaction_to_next_paint` (INP) — Google's three official Core Web Vitals.
+
+#### 2. Calculate the severity of each metric
+
+For each metric, severity is NOT "which band is the majority" — it's an average weighted by the real density of each band:
+
+```
+metric_severity = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
+```
+
+With the example above: 0.07 × 1.0 + 0.11 × 0.5 + 0.82 × 0.0 = 0.125.
+
+Why weighted instead of "dominant band"? Because an origin with 51% good / 49% needs-improvement and another with 99% good / 1% needs-improvement are very different real stories — collapsing them to the same discrete value erases the variation that genuinely exists between sites.
+
+#### 3. Average the three metrics
+
+```python
+def metric_severity(good: float, ni: float, poor: float) -> float:
+    return poor * 1.0 + ni * 0.5 + good * 0.0
+
+severity = (
+    metric_severity(*lcp_densities)
+    + metric_severity(*cls_densities)
+    + metric_severity(*inp_densities)
+) / 3
+```
+
+`severity` ends up between 0 (perfect) and 1 (the worst possible case). If your origin is missing one of the three metrics for this window (CrUX requires a minimum amount of traffic per metric before it publishes it), you simply average whichever ones you do have — my production version imputes the missing metric with that window's Peruvian cohort average instead of ignoring it (so an origin with incomplete data isn't artificially rewarded), but that part does depend on the cohort.
+
+#### 4. Your score
+
+```python
+score = round((1 - severity) * 100)
+```
+
+With `severity = 0.125`, the score is **87** — the same figure you'd see in your report. This number is 100% reproducible by anyone with nothing but Google's public API: there's no secret ingredient.
+
+#### What actually needs the cohort (and why you can't calculate it alone)
+
+The **percentile** ("better than X% of .pe sites") is different from the score: it's not a formula over your own histogram, it's your position relative to the ~20 thousand real `.pe` origins theuxreport measured with the same method. Google doesn't hand you that list — it's theuxreport's real collection work, not an algorithmic secret. That's the difference between "your number" (reproducible by anyone, today, with a free API key) and "your position" (which requires having measured the whole country with the same yardstick).
+
 I hope you enjoyed the article. Remember I update the site report every month. See you in my analytics metrics soon!
 
 ## Collaboration
