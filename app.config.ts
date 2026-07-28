@@ -1,13 +1,27 @@
 // https://github.com/nuxt-themes/alpine/blob/main/nuxt.schema.ts
 export default defineAppConfig({
   alpine: {
-    title: 'Blog - EverB',
-    description: 'The minimalist blog theme',
+    title: 'Blog - Ever Burga',
+    // Sets the `og:site_name` meta tag, which Google (and other crawlers) can use as the
+    // displayed site name in search results/link previews instead of falling back to the
+    // bare domain (e.g. "kekeros.com"). Re-indexing by Google isn't instant/guaranteed.
+    siteName: 'Ever Burga',
+    // Feeds the WebSite structured data's alternateName on the home page (see
+    // app/pages/index.vue in the theme) - fallback candidates Google may pick if "Ever Burga"
+    // itself isn't selected. The bare domain is appended automatically as the last resort.
+    siteAlternateNames: ['EverBurga', 'Ever Burga Peralta', '4verburga'],
+    description: 'My Blog ',
     image: {
-      src: '/social-card-preview.png',
-      alt: 'An image showcasing my project.',
-      width: 400,
-      height: 300
+      // Note: og:image is ALWAYS rendered as a plain rectangle by Google/Facebook/LinkedIn/X -
+      // they generate their own thumbnail from this file, there's no "circular" option here;
+      // that styling only ever applied to the on-page hero photo, which is unrelated.
+      // Dedicated 1200x630 crop (the standard og:image ratio) generated from homepage/me2.jpg -
+      // much lighter (~82KB vs ~720KB) and properly framed instead of shipping the full-size
+      // portrait photo as-is.
+      src: '/homepage/me2-social.jpg',
+      alt: 'Ever Burga',
+      width: 1200,
+      height: 630
     },
     header: {
       position: 'right', // possible value are : | 'left' | 'center' | 'right'
