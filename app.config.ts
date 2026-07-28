@@ -1,12 +1,16 @@
 // https://github.com/nuxt-themes/alpine/blob/main/nuxt.schema.ts
 export default defineAppConfig({
   alpine: {
-    title: 'Blog - EverB',
+    title: 'Blog - Ever Burga',
     // Sets the `og:site_name` meta tag, which Google (and other crawlers) can use as the
     // displayed site name in search results/link previews instead of falling back to the
     // bare domain (e.g. "kekeros.com"). Re-indexing by Google isn't instant/guaranteed.
     siteName: 'Ever Burga',
-    description: 'The minimalist blog theme',
+    // Feeds the WebSite structured data's alternateName on the home page (see
+    // app/pages/index.vue in the theme) - fallback candidates Google may pick if "Ever Burga"
+    // itself isn't selected. The bare domain is appended automatically as the last resort.
+    siteAlternateNames: ['EverBurga', 'Ever Burga Peralta', '4verburga'],
+    description: 'My Blog ',
     image: {
       // Note: og:image is ALWAYS rendered as a plain rectangle by Google/Facebook/LinkedIn/X -
       // they generate their own thumbnail from this file, there's no "circular" option here;
