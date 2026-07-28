@@ -2,6 +2,10 @@
 export default defineAppConfig({
   alpine: {
     title: 'Blog - EverB',
+    // Sets the `og:site_name` meta tag, which Google (and other crawlers) can use as the
+    // displayed site name in search results/link previews instead of falling back to the
+    // bare domain (e.g. "kekeros.com"). Re-indexing by Google isn't instant/guaranteed.
+    siteName: 'Ever Burga',
     description: 'The minimalist blog theme',
     image: {
       src: '/social-card-preview.png',
