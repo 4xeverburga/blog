@@ -8,10 +8,12 @@ export default defineAppConfig({
     siteName: 'Ever Burga',
     description: 'The minimalist blog theme',
     image: {
-      src: '/social-card-preview.png',
-      alt: 'An image showcasing my project.',
-      width: 400,
-      height: 300
+      // Was pointing at /social-card-preview.png, a file that doesn't exist in public/ - the
+      // 404'd og:image is why Google/link previews showed no image for the page at all.
+      src: '/homepage/me2.jpg',
+      alt: 'Ever Burga',
+      width: 1620,
+      height: 1080
     },
     header: {
       position: 'right', // possible value are : | 'left' | 'center' | 'right'
