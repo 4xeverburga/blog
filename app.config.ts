@@ -8,12 +8,16 @@ export default defineAppConfig({
     siteName: 'Ever Burga',
     description: 'The minimalist blog theme',
     image: {
-      // Was pointing at /social-card-preview.png, a file that doesn't exist in public/ - the
-      // 404'd og:image is why Google/link previews showed no image for the page at all.
-      src: '/homepage/me2.jpg',
+      // Note: og:image is ALWAYS rendered as a plain rectangle by Google/Facebook/LinkedIn/X -
+      // they generate their own thumbnail from this file, there's no "circular" option here;
+      // that styling only ever applied to the on-page hero photo, which is unrelated.
+      // Dedicated 1200x630 crop (the standard og:image ratio) generated from homepage/me2.jpg -
+      // much lighter (~82KB vs ~720KB) and properly framed instead of shipping the full-size
+      // portrait photo as-is.
+      src: '/homepage/me2-social.jpg',
       alt: 'Ever Burga',
-      width: 1620,
-      height: 1080
+      width: 1200,
+      height: 630
     },
     header: {
       position: 'right', // possible value are : | 'left' | 'center' | 'right'
