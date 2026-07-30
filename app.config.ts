@@ -23,6 +23,17 @@ export default defineAppConfig({
       width: 1200,
       height: 630
     },
+    // Feeds <link rel="icon">/<link rel="apple-touch-icon"> (see AppLayout.vue in the theme).
+    // Was missing entirely before - Google's search-results favicon (and the browser tab icon)
+    // fell back to a generic globe/circle. The color gradient isotype is used (rather than the
+    // black "negative" variant used for the light-mode header logo) since it stays visible on
+    // both light and dark chrome/backgrounds. PNG fallbacks generated from the same SVG via
+    // sharp for `apple-touch-icon` (Apple never rasterizes SVG) and older bots/browsers.
+    favicon: {
+      svg: '/chiffonstack-isotype.svg',
+      png: '/favicon-32x32.png',
+      appleTouchIcon: '/apple-touch-icon.png'
+    },
     header: {
       position: 'right', // possible value are : | 'left' | 'center' | 'right'
       logo: {
