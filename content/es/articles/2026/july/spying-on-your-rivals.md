@@ -133,7 +133,7 @@ Las tres métricas que importan son **largest_contentful_paint** (LCP), **cumula
 
 Por cada métrica, el severity es un promedio ponderado por la densidad real de cada banda:
 
-```
+```text
 severity_métrica = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
 ```
 
