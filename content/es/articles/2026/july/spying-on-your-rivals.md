@@ -88,6 +88,7 @@ Origin\_Technologies de R2 con una lista de categorías por tecnología. Despué
 ### Nuevo Clasificador
 
 Sin embargo me di cuenta de que la complejidad era muy alta para una tarea de tecnologías que ya estaban parseadas.Lo que hice cuando me di cuenta fue construir un dataset de evaluación con 200+ filas.
+![Eval Dataset](/articles/2026/july/dataset-eval.png)
 
 ## Ranking
 
