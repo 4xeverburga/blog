@@ -38,7 +38,6 @@ Solo necesitas 
 
 [theuxreport](https://theuxreport.kekeros.com)
 
-
 ## Decisiones de Arquitectura
 
 ### Primero veamos la naturaleza de las fuentes de datos
@@ -72,25 +71,124 @@ En cuanto a la página, Astro es mi opción preferida en estos casos. Y la CDN s
 
 Las etapas de extracción, filtro y enrichment son sencillas. 
 
-Sin embargo, http archive no entrega categorías tecnológicas normalizadas. Como usa el motor de firmas de wappalyzer, simplemente entrega categorías de lo que sea que detecte. Puedes tener React.js y Next.js a la vez, incluso cuando sabemos que Next.js es un meta-framework de React y no existe sin este.
+Sin embargo, http archive no entrega categorías tecnológicas normalizadas. Como usa el motor de firmas de wappalyzer, simplemente entrega categorías de lo que sea que detecte. Puedes tener React.js y Next.js a la vez, incluso cuando sabemos que Next.js es un meta-framework de React y no existe sin este. 
 
-### Etapa 1: Remapeo a Macrocategorías
+Anteriormente, desde julio a septiembre utilizaba el siguiente categorizador en 2 etapas.
+
+#### Etapa 1: Remapeo a Macrocategorías
 
 ![Diagrama del remapeo de categorías crudas a macrocategorías normalizadas](/articles/2026/july/spying-on-your-rivals-remapping.svg)*Remapeo de categorías crudas a macrocategorías normalizadas.*
 
 Origin\_Technologies de R2 con una lista de categorías por tecnología. Después de agruparlas tenemos menos complejidad con la que trabajar. Pero es en esta etapa en la que hacemos el trabajo sucio.
 
-### Etapa 2: Limpiando empates.
+#### Etapa 2: Limpiando empates.
 
 ![Diagrama del proceso LinearUntie para colapsar tecnologías atadas a una misma macrocategoría](/articles/2026/july/spying-on-your-rivals-linear-untie.svg)*LinearUntie: colapsando tecnologías atadas a una misma macrocategoría.*
 
-Un origen puede tener varias tecnologías para la misma categoría. Esto es una consecuencia de lo que te conté antes. Puedes tener Next.js y Next App Router clasificados dentro de la misma categoría de Web Frameworks.
+### Nuevo Clasificador
 
-Para colapsar estos empates uso un ordenamiento lineal de las tecnologías de acuerdo a categoría. Si encuentro Nest.js y Express a la vez, Nest.js es la opción que agrupa ambos conceptos. 
+Sin embargo me di cuenta de que la complejidad era muy alta para una tarea de tecnologías que ya estaban parseadas.Lo que hice cuando me di cuenta fue construir un dataset de evaluación con 200+ filas.
+![Eval Dataset](/articles/2026/july/dataset-eval.png)
 
-Una mejora directa a este modelo es realizar ordenamientos no solo por categoría, sino por categoría + framework. Pero esto requiere una tarea de relacionamiento costosa y de todas maneras hay excepciones que parten de la naturaleza con la que http archive genera los datos. 
+Ahora con una evaluación objetiva de base, escogí selective F1 para medir mi modelo. O sea, el F1 efectivo de las predicciones en las que el modelo no emitió null.
 
-Las excepciones menores o tecnologías mal categorizadas las voy agregando manualmente a una estructura en disco. Es un trabajo inevitable
+Y los resultados fueron desalentadores. Apenas un 40% de coverage, incluso si el F1 era de 90%. Esto da un Selective F1 = 40% \* 90%, menos que 50%.
+
+Es por eso que me decidí a seguir un enfoque más simple esta vez.
+![Eval Dataset](/articles/2026/july/flatten-method2.webp)
+
+Una vez que hemos aplanado la lista de tech de un dominio, reconstuirmos el mapa de categorías tecnológicas.
+Para esto construí mi propia taxonomía con lenguaje más usado en el campo. A cada item del pool de taxonomías le asigno un peso de acuerdo a qué tan difícil creo que será clasificarlo.
+
+- Frontend Layer. Aquí entran todas las librerías y tecnologías que solo se ven de cara al cliente, esto es, el navegador. Verás jQuery, React.js, WASM Blazor Pages, y para los
+  casos de SSR queda como null.
+- Frontend Framework. Aquí tenemos frameworks opinionados como Astro, Angular, React SPA, JSP, entre otros. Ya no basta con tener una librería de frontend, sino que imponga cierta estructura.
+- Backend Framework. Cuando un componente web actúa únicamente como servidor de datos. Next.js puede entrar como backend, del mismo modo que .NET. Sin embargo, existen backend puros que será difícil identificar, por ejemplo Spring Boot, Node.js/Express, Django, Nest, y este campo no espero que tenga mucha cobertura.
+- Fullstack Framework. A este súmale los fullstack monolíticos puros como WordPress, Shopify, Java EE + JSP/JSF, .NET + Razor Pages. Entre los modernos tenemos a Next.js y Nuxt, por ejemplo.
+
+La idea central es que solo se pueda identificar 1 ganador por cada taxonomía. Además Fullstack Framework debe ser excluyente con Backend Framework o Frontend Framework. Yo sé que hay muchas páginas híbridas en las que puede convivir WordPress con Angular, por poner un ejemplo. Sin embargo esto solo agrega complejidad al modelo.
+
+```python
+dump = {
+    name.strip(): float(value) * BASE_CONFIDENCE.get(name.strip(), 1.0)
+    for name, value in confidences.items()
+}
+best_fs, fs_second = _top_two(frozenset(CLOSED_MONOLITHS | DUAL_RUNTIMES), dump)
+best_be, be_second = _top_two(frozenset(PURE_BACKENDS | DUAL_RUNTIMES), dump)
+best_fe, fe_second = _top_two(FRONTEND_FRAMEWORKS, dump)
+best_layer, layer_second = _top_two(PRESENTATION_LAYERS, dump)
+```
+
+Luego, revisamos los casos de clasificación monolítica. Para tener certeza de que se está usando Laravel monolítico, vale la pena tener indicadores como stack nativo. 
+
+```python
+NATIVE_ECOSYSTEM: dict[str, frozenset[str]] = {
+  "Astro": frozenset({"React", "Svelte", "Vue.js"}),
+  "Django": frozenset(),
+  "Drupal": frozenset({"jQuery", "PHP"}),
+  "Jakarta EE": frozenset({"JavaServer Faces", "JavaServer Pages"}),
+  "Java EE": frozenset({"JavaServer Faces", "JavaServer Pages"}),
+  "Joomla": frozenset({"jQuery", "PHP"}),
+  "Laravel": frozenset({"Blade", "Vue.js"}),
+  "Microsoft ASP.NET": frozenset({"Blazor", "jQuery"}),
+  "Next.js": frozenset({"React", "Preact"}),
+  "Nuxt.js": frozenset({"Vue.js"}),
+  "Ruby on Rails": frozenset({"Hotwire"}),
+  "Spring Boot": frozenset({"JavaServer Pages", "Thymeleaf"}),
+  "SvelteKit": frozenset({"Svelte"}),
+  "WordPress": frozenset({"jQuery", "PHP"}),
+  "React": frozenset({"React Router", "React Redux"}),
+}
+
+```
+
+Finalmente generamos la predicción.
+
+```python
+headless = _is_headless(best_fs, best_fe, best_layer)
+
+chosen_fs: str | None = None
+chosen_be: str | None = None
+chosen_fe: str | None = None
+chosen_layer: str | None = None
+
+if headless:
+    if _gap_ok(best_fs, fs_second, settings) and best_fs is not None:
+        chosen_be = best_fs.name
+    if _gap_ok(best_fe, fe_second, settings) and best_fe is not None:
+        chosen_fe = best_fe.name
+    if _gap_ok(best_layer, layer_second, settings) and best_layer is not None:
+        chosen_layer = best_layer.name
+elif best_fs is not None and _gap_ok(best_fs, fs_second, settings):
+    chosen_fs = best_fs.name
+    if best_fs.name in CLOSED_MONOLITHS:
+        chosen_layer = IMPLIED_NATIVE_LAYER.get(best_fs.name)
+    if chosen_layer is None and best_layer is not None and _gap_ok(
+        best_layer, layer_second, settings
+    ):
+        chosen_layer = best_layer.name
+else:
+    if _gap_ok(best_be, be_second, settings) and best_be is not None:
+        chosen_be = best_be.name
+    if _gap_ok(best_fe, fe_second, settings) and best_fe is not None:
+        chosen_fe = best_fe.name
+    if _gap_ok(best_layer, layer_second, settings) and best_layer is not None:
+        chosen_layer = best_layer.name
+
+return StackResult(
+    fullstack_framework=chosen_fs,
+    backend_framework=chosen_be,
+    frontend_framework=chosen_fe,
+    frontend_layer=chosen_layer,
+)
+```
+
+Y, sorprendentemente, este simple modelo con reglas genera Selective F1 > 70% para las columnas que nos importan.
+
+
+Ya lo puedes ver en vivo en la página. He compuesto una categoría con nombre Web Framework que es FrontendFramework | FullStackFramework, que identifica en una palabra el stack que se puede obtener al scrapear una página. 
+
+Sobre las demás categorías, todavía usan el modelo antiguo, pero actualizaré esta entrada de blog acorde al cambio próximo.
 
 ## Ranking
 
@@ -102,7 +200,7 @@ Si te interesa validar los resultados que ves en la web o alguna publicación, e
 
 ### Cómo reproducir tu **severity** y tu **score** con la API pública de CrUX
 
- Lo que se muestra en la sección Core Web Vitals sale directo de la [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) de Google y que se usan en su ranking de SEO. 
+Lo que se muestra en la sección Core Web Vitals sale directo de la [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) de Google y que se usan en su ranking de SEO.
 
 #### 1. Pide un histograma a través de la CrUX API
 
@@ -127,19 +225,19 @@ La respuesta trae, por cada métrica, un **histogram** de 3 bins: bueno / necesi
 }
 ```
 
-Las tres métricas que importan son **largest_contentful_paint** (LCP), **cumulative_layout_shift** (CLS) e **interaction_to_next_paint** (INP). Los core web vitals oficiales de Google.
+Las tres métricas que importan son **largest\_contentful\_paint** (LCP), **cumulative\_layout\_shift** (CLS) e **interaction\_to\_next\_paint** (INP). Los core web vitals oficiales de Google.
 
 #### 2. Calcula el severity de cada métrica
 
 Por cada métrica, el severity es un promedio ponderado por la densidad real de cada banda:
 
-```
+```text
 severity_métrica = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
 ```
 
 Con el ejemplo de arriba: 0.07 × 1.0 + 0.11 × 0.5 + 0.82 × 0.0 = 0.125.
 
-¿Por qué ponderado y no "banda dominante"? Porque un origen con 51% good / 49% needs-improvement y otro con 99% good / 1% needs-improvement son historias reales muy distintas 
+¿Por qué ponderado y no "banda dominante"? Porque un origen con 51% good / 49% needs-improvement y otro con 99% good / 1% needs-improvement son historias reales muy distintas
 
 #### 3. Promedia las tres métricas
 
