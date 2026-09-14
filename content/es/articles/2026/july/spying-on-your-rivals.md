@@ -38,7 +38,6 @@ Solo necesitas 
 
 [theuxreport](https://theuxreport.kekeros.com)
 
-
 ## Decisiones de Arquitectura
 
 ### Primero veamos la naturaleza de las fuentes de datos
@@ -72,25 +71,23 @@ En cuanto a la página, Astro es mi opción preferida en estos casos. Y la CDN s
 
 Las etapas de extracción, filtro y enrichment son sencillas. 
 
-Sin embargo, http archive no entrega categorías tecnológicas normalizadas. Como usa el motor de firmas de wappalyzer, simplemente entrega categorías de lo que sea que detecte. Puedes tener React.js y Next.js a la vez, incluso cuando sabemos que Next.js es un meta-framework de React y no existe sin este.
+Sin embargo, http archive no entrega categorías tecnológicas normalizadas. Como usa el motor de firmas de wappalyzer, simplemente entrega categorías de lo que sea que detecte. Puedes tener React.js y Next.js a la vez, incluso cuando sabemos que Next.js es un meta-framework de React y no existe sin este. 
 
-### Etapa 1: Remapeo a Macrocategorías
+Anteriormente, desde julio a septiembre utilizaba el siguiente categorizador en 2 etapas.
+
+#### Etapa 1: Remapeo a Macrocategorías
 
 ![Diagrama del remapeo de categorías crudas a macrocategorías normalizadas](/articles/2026/july/spying-on-your-rivals-remapping.svg)*Remapeo de categorías crudas a macrocategorías normalizadas.*
 
 Origin\_Technologies de R2 con una lista de categorías por tecnología. Después de agruparlas tenemos menos complejidad con la que trabajar. Pero es en esta etapa en la que hacemos el trabajo sucio.
 
-### Etapa 2: Limpiando empates.
+#### Etapa 2: Limpiando empates.
 
 ![Diagrama del proceso LinearUntie para colapsar tecnologías atadas a una misma macrocategoría](/articles/2026/july/spying-on-your-rivals-linear-untie.svg)*LinearUntie: colapsando tecnologías atadas a una misma macrocategoría.*
 
-Un origen puede tener varias tecnologías para la misma categoría. Esto es una consecuencia de lo que te conté antes. Puedes tener Next.js y Next App Router clasificados dentro de la misma categoría de Web Frameworks.
+### Nuevo Clasificador
 
-Para colapsar estos empates uso un ordenamiento lineal de las tecnologías de acuerdo a categoría. Si encuentro Nest.js y Express a la vez, Nest.js es la opción que agrupa ambos conceptos. 
-
-Una mejora directa a este modelo es realizar ordenamientos no solo por categoría, sino por categoría + framework. Pero esto requiere una tarea de relacionamiento costosa y de todas maneras hay excepciones que parten de la naturaleza con la que http archive genera los datos. 
-
-Las excepciones menores o tecnologías mal categorizadas las voy agregando manualmente a una estructura en disco. Es un trabajo inevitable
+Sin embargo me di cuenta de que la complejidad era muy alta para una tarea de tecnologías que ya estaban parseadas.Lo que hice cuando me di cuenta fue construir un dataset de evaluación con 200+ filas.
 
 ## Ranking
 
@@ -102,7 +99,7 @@ Si te interesa validar los resultados que ves en la web o alguna publicación, e
 
 ### Cómo reproducir tu **severity** y tu **score** con la API pública de CrUX
 
- Lo que se muestra en la sección Core Web Vitals sale directo de la [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) de Google y que se usan en su ranking de SEO. 
+Lo que se muestra en la sección Core Web Vitals sale directo de la [Chrome UX Report API](https://developer.chrome.com/docs/crux/api) de Google y que se usan en su ranking de SEO.
 
 #### 1. Pide un histograma a través de la CrUX API
 
@@ -127,19 +124,19 @@ La respuesta trae, por cada métrica, un **histogram** de 3 bins: bueno / necesi
 }
 ```
 
-Las tres métricas que importan son **largest_contentful_paint** (LCP), **cumulative_layout_shift** (CLS) e **interaction_to_next_paint** (INP). Los core web vitals oficiales de Google.
+Las tres métricas que importan son **largest\_contentful\_paint** (LCP), **cumulative\_layout\_shift** (CLS) e **interaction\_to\_next\_paint** (INP). Los core web vitals oficiales de Google.
 
 #### 2. Calcula el severity de cada métrica
 
 Por cada métrica, el severity es un promedio ponderado por la densidad real de cada banda:
 
-```
+```text
 severity_métrica = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
 ```
 
 Con el ejemplo de arriba: 0.07 × 1.0 + 0.11 × 0.5 + 0.82 × 0.0 = 0.125.
 
-¿Por qué ponderado y no "banda dominante"? Porque un origen con 51% good / 49% needs-improvement y otro con 99% good / 1% needs-improvement son historias reales muy distintas 
+¿Por qué ponderado y no "banda dominante"? Porque un origen con 51% good / 49% needs-improvement y otro con 99% good / 1% needs-improvement son historias reales muy distintas
 
 #### 3. Promedia las tres métricas
 
