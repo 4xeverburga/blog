@@ -90,6 +90,106 @@ Origin\_Technologies de R2 con una lista de categorías por tecnología. Despué
 Sin embargo me di cuenta de que la complejidad era muy alta para una tarea de tecnologías que ya estaban parseadas.Lo que hice cuando me di cuenta fue construir un dataset de evaluación con 200+ filas.
 ![Eval Dataset](/articles/2026/july/dataset-eval.png)
 
+Ahora con una evaluación objetiva de base, escogí selective F1 para medir mi modelo. O sea, el F1 efectivo de las predicciones en las que el modelo no emitió null.
+
+Y los resultados fueron desalentadores. Apenas un 40% de coverage, incluso si el F1 era de 90%. Esto da un Selective F1 = 40% \* 90%, menos que 50%.
+
+Es por eso que me decidí a seguir un enfoque más simple esta vez.
+![Eval Dataset](/articles/2026/july/flatten-method2.webp)
+
+Una vez que hemos aplanado la lista de tech de un dominio, reconstuirmos el mapa de categorías tecnológicas.
+Para esto construí mi propia taxonomía con lenguaje más usado en el campo. A cada item del pool de taxonomías le asigno un peso de acuerdo a qué tan difícil creo que será clasificarlo.
+
+- Frontend Layer. Aquí entran todas las librerías y tecnologías que solo se ven de cara al cliente, esto es, el navegador. Verás jQuery, React.js, WASM Blazor Pages, y para los
+  casos de SSR queda como null.
+- Frontend Framework. Aquí tenemos frameworks opinionados como Astro, Angular, React SPA, JSP, entre otros. Ya no basta con tener una librería de frontend, sino que imponga cierta estructura.
+- Backend Framework. Cuando un componente web actúa únicamente como servidor de datos. Next.js puede entrar como backend, del mismo modo que .NET. Sin embargo, existen backend puros que será difícil identificar, por ejemplo Spring Boot, Node.js/Express, Django, Nest, y este campo no espero que tenga mucha cobertura.
+- Fullstack Framework. A este súmale los fullstack monolíticos puros como WordPress, Shopify, Java EE + JSP/JSF, .NET + Razor Pages. Entre los modernos tenemos a Next.js y Nuxt, por ejemplo.
+
+La idea central es que solo se pueda identificar 1 ganador por cada taxonomía. Además Fullstack Framework debe ser excluyente con Backend Framework o Frontend Framework. Yo sé que hay muchas páginas híbridas en las que puede convivir WordPress con Angular, por poner un ejemplo. Sin embargo esto solo agrega complejidad al modelo.
+
+```python
+dump = {
+    name.strip(): float(value) * BASE_CONFIDENCE.get(name.strip(), 1.0)
+    for name, value in confidences.items()
+}
+best_fs, fs_second = _top_two(frozenset(CLOSED_MONOLITHS | DUAL_RUNTIMES), dump)
+best_be, be_second = _top_two(frozenset(PURE_BACKENDS | DUAL_RUNTIMES), dump)
+best_fe, fe_second = _top_two(FRONTEND_FRAMEWORKS, dump)
+best_layer, layer_second = _top_two(PRESENTATION_LAYERS, dump)
+```
+
+Luego, revisamos los casos de clasificación monolítica. Para tener certeza de que se está usando Laravel monolítico, vale la pena tener indicadores como stack nativo. 
+
+```python
+NATIVE_ECOSYSTEM: dict[str, frozenset[str]] = {
+  "Astro": frozenset({"React", "Svelte", "Vue.js"}),
+  "Django": frozenset(),
+  "Drupal": frozenset({"jQuery", "PHP"}),
+  "Jakarta EE": frozenset({"JavaServer Faces", "JavaServer Pages"}),
+  "Java EE": frozenset({"JavaServer Faces", "JavaServer Pages"}),
+  "Joomla": frozenset({"jQuery", "PHP"}),
+  "Laravel": frozenset({"Blade", "Vue.js"}),
+  "Microsoft ASP.NET": frozenset({"Blazor", "jQuery"}),
+  "Next.js": frozenset({"React", "Preact"}),
+  "Nuxt.js": frozenset({"Vue.js"}),
+  "Ruby on Rails": frozenset({"Hotwire"}),
+  "Spring Boot": frozenset({"JavaServer Pages", "Thymeleaf"}),
+  "SvelteKit": frozenset({"Svelte"}),
+  "WordPress": frozenset({"jQuery", "PHP"}),
+  "React": frozenset({"React Router", "React Redux"}),
+}
+
+```
+
+Finalmente generamos la predicción.
+
+```python
+headless = _is_headless(best_fs, best_fe, best_layer)
+
+chosen_fs: str | None = None
+chosen_be: str | None = None
+chosen_fe: str | None = None
+chosen_layer: str | None = None
+
+if headless:
+    if _gap_ok(best_fs, fs_second, settings) and best_fs is not None:
+        chosen_be = best_fs.name
+    if _gap_ok(best_fe, fe_second, settings) and best_fe is not None:
+        chosen_fe = best_fe.name
+    if _gap_ok(best_layer, layer_second, settings) and best_layer is not None:
+        chosen_layer = best_layer.name
+elif best_fs is not None and _gap_ok(best_fs, fs_second, settings):
+    chosen_fs = best_fs.name
+    if best_fs.name in CLOSED_MONOLITHS:
+        chosen_layer = IMPLIED_NATIVE_LAYER.get(best_fs.name)
+    if chosen_layer is None and best_layer is not None and _gap_ok(
+        best_layer, layer_second, settings
+    ):
+        chosen_layer = best_layer.name
+else:
+    if _gap_ok(best_be, be_second, settings) and best_be is not None:
+        chosen_be = best_be.name
+    if _gap_ok(best_fe, fe_second, settings) and best_fe is not None:
+        chosen_fe = best_fe.name
+    if _gap_ok(best_layer, layer_second, settings) and best_layer is not None:
+        chosen_layer = best_layer.name
+
+return StackResult(
+    fullstack_framework=chosen_fs,
+    backend_framework=chosen_be,
+    frontend_framework=chosen_fe,
+    frontend_layer=chosen_layer,
+)
+```
+
+Y, sorprendentemente, este simple modelo con reglas genera Selective F1 > 70% para las columnas que nos importan.
+
+
+Ya lo puedes ver en vivo en la página. He compuesto una categoría con nombre Web Framework que es FrontendFramework | FullStackFramework, que identifica en una palabra el stack que se puede obtener al scrapear una página. 
+
+Sobre las demás categorías, todavía usan el modelo antiguo, pero actualizaré esta entrada de blog acorde al cambio próximo.
+
 ## Ranking
 
 Una vez que ya tienes los conjuntos de datos normalizados el ranking se vuelve una tarea de estadística, y la página de reportes un proceso de diseño y UI.
