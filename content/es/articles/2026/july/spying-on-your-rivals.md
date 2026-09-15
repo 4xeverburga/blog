@@ -87,7 +87,7 @@ Origin\_Technologies de R2 con una lista de categorías por tecnología. Despué
 
 ### Nuevo Clasificador
 
-Sin embargo me di cuenta de que la complejidad era muy alta para una tarea de tecnologías que ya estaban parseadas.Lo que hice cuando me di cuenta fue construir un dataset de evaluación con 200+ filas.
+Sin embargo me di cuenta de que la complejidad del modelo anterior era muy alta. Era casi seguro que estaba haciendo overfit. Lo que hice entonces fue construir un dataset de evaluación con 200+ filas.
 ![Eval Dataset](/articles/2026/july/dataset-eval.png)
 
 Ahora con una evaluación objetiva de base, escogí selective F1 para medir mi modelo. O sea, el F1 efectivo de las predicciones en las que el modelo no emitió null.
