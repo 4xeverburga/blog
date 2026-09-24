@@ -36,7 +36,7 @@ You just need
 - The BigQuery database and API for CrUX.
 - The HTTP Archive database in BigQuery.
 
-[theuxreport](https://theuxreport.kekeros.com)
+[The Web Report](https://thewebreport.kekeros.com)
 
 
 ## Architecture Decisions
