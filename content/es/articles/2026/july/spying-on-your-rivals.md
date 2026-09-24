@@ -36,7 +36,7 @@ Solo necesitas 
 - La base de datos en bq y api de crux.
 - La base de datos de http archive en bq.
 
-[theuxreport](https://theuxreport.kekeros.com)
+[The Web Report](https://thewebreport.kekeros.com)
 
 ## Decisiones de Arquitectura
 
