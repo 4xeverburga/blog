@@ -133,7 +133,7 @@ The three metrics that matter are **largest_contentful_paint** (LCP), **cumulati
 
 For each metric, severity is an average weighted by the real density of each band:
 
-```
+```bash
 metric_severity = poor × 1.0 + needs_improvement × 0.5 + good × 0.0
 ```
 
