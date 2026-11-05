@@ -5,6 +5,13 @@
   "engines": {
     "node": ">=22"
   },
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "version": "^22.14.0",
+      "onFail": "error"
+    }
+  },
   "scripts": {
     "dev": "nuxi dev",
     "build": "nuxi build",
@@ -13,14 +20,14 @@
     "lint": "eslint ."
   },
   "devDependencies": {
-    "@4xeverburga/alpine-spanishplus": "3.3.0",
+    "@4xeverburga/alpine-spanishplus": "3.3.1",
     "@nuxt/devtools": "^1.0.8",
     "@nuxt/eslint-config": "^0.2.0",
     "@types/node": "^22.0.0",
     "eslint": "^8.57.0",
     "nuxt": "^4.4.8",
     "nuxt-gtag": "^4.1.0",
-    "nuxt-studio": "^1.7.0"
+    "nuxt-studio": "^1.8.0"
   },
   "dependencies": {
     "@iconify-json/material-symbols": "^1.2.84",
