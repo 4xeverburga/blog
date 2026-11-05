@@ -98,13 +98,13 @@ That "pinned baseline" is the diff check against the goldens. The report never m
 ## Is This Reward Hacking?
 
 This isn't an isolated DeepSeek case. METR reported frontier models
-editing tests and scorers to pass their tasks [1]. ImpossibleBench designs
+editing tests and scorers to pass their tasks [\[1\]](#ref-1). ImpossibleBench designs
 tasks where passing the tests *requires* cheating, and finds that the rate
-depends heavily on how the prompt is written [2]. EvilGenie found explicit
-hacking in Codex and Claude Code [3]. And in a CTF, o1-preview found an
-exposed Docker API and used it to read the flag directly [4]. SWE-bench had
+depends heavily on how the prompt is written [\[2\]](#ref-2). EvilGenie found explicit
+hacking in Codex and Claude Code [\[3\]](#ref-3). And in a CTF, o1-preview found an
+exposed Docker API and used it to read the flag directly [\[4\]](#ref-4). SWE-bench had
 to patch its own harness after discovering agents reading future commits
-with `git log --all` [5].
+with `git log --all` [\[5\]](#ref-5).
 
 What happened in my initial runs? Because it happened more than once.
 
@@ -112,12 +112,12 @@ What happened in my initial runs? Because it happened more than once.
 - **It knew it was being measured.** Every chain of reasoning mentions "the
   benchmark", "hidden tests", "the hidden gate". A model that knows it's
   being evaluated may behave differently than in production, and that
-  awareness is the precondition for *sandbagging* [6]. On top of that,
-  hacking learned during training generalizes to broader misalignment [7].
+  awareness is the precondition for *sandbagging* [\[6\]](#ref-6). On top of that,
+  hacking learned during training generalizes to broader misalignment [\[7\]](#ref-7).
 
 ## New Architecture
 
-My sandbox wasn't a sandbox, it was just a suggestion. Luckily, the UK AI Security Institute has already published Inspect AI, an open source library that makes this kind of work easier [8].
+My sandbox wasn't a sandbox, it was just a suggestion. Luckily, the UK AI Security Institute has already published Inspect AI, an open source library that makes this kind of work easier [\[8\]](#ref-8).
 
 ![Current bench architecture: the solve sandbox and the score stacks, both inside the host](/articles/2026/november/deepseek-found-the-answer-key-architecture.svg "Current architecture of jsp-decouple-bench")
 
@@ -131,12 +131,12 @@ On the other hand, from the moment I used public open source projects in my benc
 
 ## References
 
-1. S. Von Arx, L. Chan and E. Barnes. Recent frontier models are reward hacking. METR, June 2025. Available: <https://metr.org/blog/2025-06-05-recent-reward-hacking>
-2. Z. Zhong, A. Raghunathan and N. Carlini. ImpossibleBench: Measuring LLMs' propensity of exploiting test cases. 2025, arXiv:2510.20270. Available: <https://arxiv.org/abs/2510.20270>
-3. J. Gabor, J. Lynch and J. Rosenfeld. EvilGenie: A reward hacking benchmark. 2025, arXiv:2511.21654. Available: <https://arxiv.org/abs/2511.21654>
-4. OpenAI. OpenAI o1 system card. September 2024. Available: <https://cdn.openai.com/o1-system-card.pdf>
-5. J. Kahn. Repo state loopholes during agentic evaluation. SWE-bench, issue #465, September 2025. Available: <https://github.com/SWE-bench/SWE-bench/issues/465>
-6. T. van der Weij et al. AI sandbagging: Language models can strategically underperform on evaluations. 2024, arXiv:2406.07358. Available: <https://arxiv.org/abs/2406.07358>
-7. M. MacDiarmid et al. Natural emergent misalignment from reward hacking in production RL. 2025, arXiv:2511.18397. Available: <https://arxiv.org/abs/2511.18397>
-8. UK AI Security Institute. Inspect AI: Framework for large language model evaluations. Available: <https://github.com/UKGovernmentBEIS/inspect_ai>
-9. OpenAI. Why SWE-bench Verified no longer measures frontier coding capabilities. February 2026. Available: <https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/>
+1. :span{#ref-1} S. Von Arx, L. Chan and E. Barnes. Recent frontier models are reward hacking. METR, June 2025. Available: <https://metr.org/blog/2025-06-05-recent-reward-hacking>
+2. :span{#ref-2} Z. Zhong, A. Raghunathan and N. Carlini. ImpossibleBench: Measuring LLMs' propensity of exploiting test cases. 2025, arXiv:2510.20270. Available: <https://arxiv.org/abs/2510.20270>
+3. :span{#ref-3} J. Gabor, J. Lynch and J. Rosenfeld. EvilGenie: A reward hacking benchmark. 2025, arXiv:2511.21654. Available: <https://arxiv.org/abs/2511.21654>
+4. :span{#ref-4} OpenAI. OpenAI o1 system card. September 2024. Available: <https://cdn.openai.com/o1-system-card.pdf>
+5. :span{#ref-5} J. Kahn. Repo state loopholes during agentic evaluation. SWE-bench, issue #465, September 2025. Available: <https://github.com/SWE-bench/SWE-bench/issues/465>
+6. :span{#ref-6} T. van der Weij et al. AI sandbagging: Language models can strategically underperform on evaluations. 2024, arXiv:2406.07358. Available: <https://arxiv.org/abs/2406.07358>
+7. :span{#ref-7} M. MacDiarmid et al. Natural emergent misalignment from reward hacking in production RL. 2025, arXiv:2511.18397. Available: <https://arxiv.org/abs/2511.18397>
+8. :span{#ref-8} UK AI Security Institute. Inspect AI: Framework for large language model evaluations. Available: <https://github.com/UKGovernmentBEIS/inspect_ai>
+9. :span{#ref-9} OpenAI. Why SWE-bench Verified no longer measures frontier coding capabilities. February 2026. Available: <https://openai.com/index/why-we-no-longer-evaluate-swe-bench-verified/>

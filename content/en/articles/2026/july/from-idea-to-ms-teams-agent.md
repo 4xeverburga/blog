@@ -316,8 +316,8 @@ Accept-Encoding: gzip
 
 ## References
 
-1. []{#ref-1}Microsoft. Agents Toolkit fundamentals. Available: <https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals>
-2. []{#ref-2}Microsoft. Microsoft 365 Agents SDK Quickstart (Python). Available: <https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python>
-3. []{#ref-3}Microsoft. Adaptive Cards. Available: <https://adaptivecards.microsoft.com/>
-4. []{#ref-4}Microsoft. Microsoft Teams admin center. Available: <https://admin.teams.microsoft.com>
-5. []{#ref-5}Microsoft. Microsoft 365 admin center. Available: <https://admin.microsoft.com>
+1. :span{#ref-1} Microsoft. Agents Toolkit fundamentals. Available: <https://learn.microsoft.com/en-us/microsoftteams/platform/toolkit/agents-toolkit-fundamentals>
+2. :span{#ref-2} Microsoft. Microsoft 365 Agents SDK Quickstart (Python). Available: <https://learn.microsoft.com/en-us/microsoft-365/agents-sdk/quickstart?pivots=python>
+3. :span{#ref-3} Microsoft. Adaptive Cards. Available: <https://adaptivecards.microsoft.com/>
+4. :span{#ref-4} Microsoft. Microsoft Teams admin center. Available: <https://admin.teams.microsoft.com>
+5. :span{#ref-5} Microsoft. Microsoft 365 admin center. Available: <https://admin.microsoft.com>
