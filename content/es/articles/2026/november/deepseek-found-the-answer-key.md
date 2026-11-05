@@ -3,7 +3,7 @@ title: "Reward Hacking: ¿DeepSeek resolvió mi bench?"
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
-cover: /articles/2026/november/deepseek-found-the-answer-key-architecture.svg
+cover: /articles/2026/november/deepseek-found-the-answer-key-cover.svg
 date: 2026-11-04T10:00:00.000Z
 description: Armé una bench de tareas agénticas para mi rol. Su primer paso fue hacer trampa en la respuesta.
 layout: article
