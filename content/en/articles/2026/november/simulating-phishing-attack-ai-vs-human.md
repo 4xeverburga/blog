@@ -18,7 +18,11 @@ head:
 
 # Simulating a Phishing Attack: AI vs Human
 
-![Phishing expected payoff vs filter strength, human and AI](/articles/2026/november/doppel-phishing-payoff.gif "Phishing expected payoff vs filter strength")
+::div{.hero-breakout}
+  :::div{.hero-breakout-inner}
+  ![Phishing expected payoff vs filter strength, human and AI](/articles/2026/november/doppel-phishing-payoff.gif "Phishing expected payoff vs filter strength")
+  :::
+::
 
 3Blue1Brown and Doppel published a challenge at [3blue1brown.com/talent](https://www.3blue1brown.com/talent/).
 
