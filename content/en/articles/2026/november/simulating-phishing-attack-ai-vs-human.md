@@ -24,26 +24,23 @@ head:
 
 I'm currently studying statistics and information theory. The challenge looked like good practice, so I decided to solve it by hand first.
 
-![Handwritten notes of the solution, page 1 of 7](/articles/2026/november/doppel-phishing-notas.png "Handwritten notes (page 1 of 7)")  ::small
-[All pages here](https://github.com/4xeverburga/doppel-phising-strat/tree/main/proofs/jpegraw)
-\::
-
+![Manuscripts](/articles/2026/november/doppel-phishing-notas.png)
 In my solution I assume the defender does not update the phishing filter's parameters. Treating those parameters as variables too would probably open up new lines of research and new information channels, but I don't consider that in this write-up.
 
 ## Conclusions
 
 The conclusions of my solution:
 
-- While the attacker is still estimating the parameters $C$ and $f$ (which tokens survive the flags), the best strategy is to send messages with a single malicious phrase/token ($n=1$).
-- Once $C$ and $f$ are known, the problem is one of optimization: choose how many times to use each token without exceeding the filter threshold $C$.
+- While the attacker is still estimating the parameters  C  and  f  (which tokens survive the flags), the best strategy is to send messages with a single malicious phrase/token ( n=1 ).
+- Once  C  and  f  are known, the problem is one of optimization: choose how many times to use each token without exceeding the filter threshold  C .
 
-Check out the full solution! [Human solution (PDF)](https://github.com/4xeverburga/doppel-phising-strat/blob/main/proofs/pdf/solution_human_en.pdf).
+[Check out the full solution!](https://github.com/4xeverburga/doppel-phising-strat/blob/main/proofs/pdf/solution_human_en.pdf).
 
 ## Simulation
 
 ![Divergence budget used by each strategy, by false-positive rate](/articles/2026/november/doppel-phishing-budget.gif "What fraction of the divergence budget each strategy uses")
 
-At a time when AI can reason so impressively, it's easy to lose motivation. I decided to take advantage of that and compare my solution against Fable's, working autonomously on its own proposal ([PDF](https://github.com/4xeverburga/doppel-phising-strat/blob/main/proofs/pdf/solution_ai_en.pdf)).
+At this times when AI can reason so impressively, it's easy to lose motivation. I decided to take advantage of that and compare my solution against Fable's, working autonomously on its own proposal ([PDF](https://github.com/4xeverburga/doppel-phising-strat/blob/main/proofs/pdf/solution_ai_en.pdf)).
 
 A must was building an engine with interfaces that cleanly separate what the attacker can learn from what the defender has access to. That keeps the comparison between both strategies fair.
 

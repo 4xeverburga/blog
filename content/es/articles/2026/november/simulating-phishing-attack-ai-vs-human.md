@@ -8,7 +8,7 @@ date: '2026-11-14T10:00:00.000Z'
 description: Writeup del challenge de phishing de 3b1b/doppel
 layout: article
 seo:
-  title: Simulando un ataque de phishing, IA vs humano (challenge 3b1b/doppel)
+  title: Simulando un ataque de phishing, IA vs humano (3b1b/Doppel challenge )
   description: Resolví a mano el puzzle de phishing de 3Blue1Brown y Doppel, y lo comparé en una simulación con la solución de un modelo.
 head:
   meta:
@@ -24,7 +24,7 @@ head:
 
 Actualmente estoy estudiando estadística y teoría de la información. El challenge se veía como un buen entrenamiento, así que decidí resolverlo primero a mano.
 
-![Notas manuscritas de la solución, página 1 de 7](/articles/2026/november/doppel-phishing-notas.png "Notas manuscritas (página 1 de 7)")  <https://github.com/4xeverburga/doppel-phising-strat/tree/main/proofs/jpegraw>
+![Notas manuscritas de la solución, página 1 de 7](/articles/2026/november/doppel-phishing-notas.png)
 
 En mi solución asumo que el defensor no actualiza los parámetros de los filtros de phishing. Considerar que esos parámetros también son variables probablemente abriría nuevas líneas de investigación y nuevos canales de información, pero no lo contemplo en este writeup.
 
