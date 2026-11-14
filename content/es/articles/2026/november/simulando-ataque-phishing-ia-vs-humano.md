@@ -1,10 +1,10 @@
 ---
-title: "Simulando un Ataque de Phishing: IA vs Humano"
+title: 'Simulando un Ataque de Phishing: IA vs Humano'
 author:
   name: Ever Burga
   url: https://www.linkedin.com/in/everburga/
 cover: /articles/2026/november/doppel-phishing-cover.webp
-date: 2026-11-14T10:00:00.000Z
+date: '2026-11-14T10:00:00.000Z'
 description: Writeup del challenge de phishing de 3b1b/doppel
 layout: article
 seo:
@@ -20,37 +20,33 @@ head:
 
 ![Phishing expected payoff vs filter strength, humano e IA](/articles/2026/november/doppel-phishing-payoff.gif "Phishing expected payoff vs filter strength")
 
-3Blue1Brown y Doppel publicaron un puzzle de phishing en la página de talento de 3b1b. Un atacante elige una distribución de frases para maximizar su retorno esperado, pero un detector lo vigila con una divergencia KL contra el correo legítimo y un filtro binario descarta ciertas palabras. El atacante no conoce ni el umbral ni el filtro.
+3Blue1Brown y Doppel publicaron un challenge en [https://www.3blue1brown.com/talent/.](https://www.3blue1brown.com/talent/)   
+  
+Actualmente me encuentro estudiando conceptos de estadística y teoría de información. Se veía como un buen entrenamiento, así que me di a hacerlo a mano primero.   
+  
+\<adjuntar imagen de fotos a mano>  
+\<enlace a fotos raw>  
+  
+En mi solución propuesta no asumimos que el defensor no actualiza los parámetros de los filtros de phishing. Considerar que los parámetros también son variables probablemente introduzca nueva superficie de investigación y canales de información, pero no ha sido considerado en este writeup.
 
-## Las soluciones
-
-Resolví el puzzle de dos formas:
-
-- **A mano.** Mis [notas manuscritas originales](https://github.com/4xeverburga/doppel-phising-strat/tree/main/proofs/raw) son la fuente de todo lo demás.
-- **Con un modelo.** [La solución de la IA](/articles/2026/november/doppel-phishing-solucion-ia.pdf) la desarrolló un modelo por su cuenta, sin mi supuesto de que el atacante conoce la distribución del defensor.
-
-Explorando a mano algunas soluciones, llegué a una estrategia que me gustó bastante: mientras el atacante todavía estima el umbral y el filtro, conviene inyectar un solo token.
-
-## Conclusiones del paper
+## Conclusiones 
 
 Las conclusiones de mi solución:
 
-- Mientras el atacante estima $C$ y $f$, la mejor estrategia es inyectar un único token ($n = 1$).
-- Una vez conocidos $C$ y $f$, queda un problema clásico de optimización: elegir cuántas veces usar cada token bajo el presupuesto de divergencia.
-- En un escenario real, el defensor probablemente actualiza los parámetros del filtro con frecuencia. Esa actualización de información es un tema de investigación, tanto para diseñar estrategias del atacante como del defensor.
+- Mientras el atacante estima los parámetros C y f (supervivencia ante las flags) la mejor estrategia es enviar mensajes con únicamente n=1 frases/tokens maliciosos.
+- Una vez conocidos $C$ y $f$ el problema es de optimización: elegir cuántas veces usar cada token de modo que no se supere el filtro C.
 
-Pueden leer el desarrollo completo en [la solución humana (PDF)](/articles/2026/november/doppel-phishing-solucion-humana.pdf).
+Revisen la solución completa! [la solución humana (PDF)](/articles/2026/november/doppel-phishing-solucion-humana.pdf).
 
-## La simulación
+## Simulación 
 
-![Uso del presupuesto de divergencia de cada estrategia según la tasa de falsos positivos](/articles/2026/november/doppel-phishing-budget.gif "Qué fracción del presupuesto de divergencia usa cada estrategia")
+![Uso del presupuesto de divergencia de cada estrategia según la tasa de falsos positivos](/articles/2026/november/doppel-phishing-budget.gif "Qué fracción del presupuesto de divergencia usa cada estrategia")  
+En estos tiempos en los que la IA puede razonar de manera increíble es fácil perder motivación. Decidí aprovechar para hacer una comparación entre mi solución y Fable trabajando de manera autónoma en una propuesta.
 
-Para comparar las dos soluciones las enfrenté en una simulación sobre correos de verdad:
+Obviamente, un must fue desarrollar un engine con interfaces que separen claramente la información que puede recibir el atacante y a la que tiene acceso el defensor. De ese modo se mantiene una comparación juta entre ambas estrategias. 
 
-- **Defensor.** Mide la divergencia de cada mensaje contra Enron, calibra su umbral $C$ para no bloquear más de cierto porcentaje de correo legítimo (de 1 % a 20 %) y arma un filtro $f$ con el 10 % de los tokens maliciosos de mayor retorno.
-- **Atacante.** Parte de una distribución pública distinta de Enron (SpamAssassin y listas de Python y Emacs), 155 tokens maliciosos y plantillas de correo inocuo que reescribe. Solo observa si el usuario convirtió, nunca si lo detectaron.
-- **Humano e IA** corren sus estrategias en 25 mundos (5 tasas de falsos positivos y 5 longitudes de mensaje, de 100 a 500 tokens).
+La ganancia esperada de los mensajes de phishing quedó ajustada, como vieron en el primer gif. Pero Fable encontró una mejor estrategia para extraer información del canal Z de respuesta de un mensaje de phishing.  
+  
+¿Podría haber obtenido mejores resultados dejando iterar a Fable sobre la simulación y sus resultados?. O podría haber hecho un modelo con overfit. Difícil de saber. 
 
-El retorno medio quedó casi empatado: 0.953 para la estrategia humana y 0.948 para la IA. La IA ganó en 7 de los 25 mundos, sobre todo con mensajes cortos y un filtro laxo, donde el humano llegó a 0.595 frente a 0.760 de la IA. Con mensajes largos, el humano suele ir por delante.
-
-El código, los datos y la simulación completa están en [github.com/4xeverburga/doppel-phising-strat](https://github.com/4xeverburga/doppel-phising-strat). El corpus de phishing usado para los tokens maliciosos es de Jose Nazario (CC-BY-4.0).
+El código de la simulación lo encuentran en [github.com/4xeverburga/doppel-phising-strat](https://github.com/4xeverburga/doppel-phising-strat).
