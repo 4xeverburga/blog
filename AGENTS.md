@@ -7,6 +7,7 @@ This workspace uses custom agents for blog content creation and social media pub
 - All work happens on `dev`. Changes reach `main` (production) **only via a pull request from `dev`** — never push directly to `main` or open PRs into it from any other branch.
 - `main` is protected by a repo ruleset (`main-protect`): no deletion, no force-push, pull request required to merge.
 - `dev` is protected by a repo ruleset (`dev-protect`): no deletion, no force-push. Pushing new commits directly to `dev` is still allowed — only the branch itself can't be deleted or force-pushed.
+- **Article file names are the same in every language.** An article lives at `content/<lang>/articles/<year>/<month>/<slug>.md` and the `<slug>` is identical in `en` and `es`, using the English slug (e.g. `simulating-phishing-attack-ai-vs-human.md` in both). Never translate the file name; only the content and frontmatter are translated.
 
 ## Cover Images
 
